@@ -32,7 +32,7 @@ class Cqbot(object):
 
         while True:
             msg = deserialize(self.lstn_fd.recvfrom(1024))
-            is_success, return_msg = process(msg)
+            is_success, return_msg = process(msg, self.is_debug)
             if is_success:
                 self.send_fd.sendto(serialize(return_msg))
 
