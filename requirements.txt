@@ -1,0 +1,10 @@
+certifi==2018.11.29
+chardet==3.0.4
+Django==2.1.7
+idna==2.6
+jsonpickle==0.9.6
+PyMySQL==0.9.3
+pytz==2018.9
+requests==2.18.4
+urllib3==1.22
+websockets==4.0.1

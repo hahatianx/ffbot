@@ -20,7 +20,6 @@ class Cqbot(object):
         self.lstn_fd = socket.socket(socket.AF_INET,
                                      socket.SOCK_DGRAM)
         self.lstn_fd.bind(self.srv_addr_tuple)
-        self.lstn_fd.listen()
 
     def __del__(self):
         self.send_fd.close()
