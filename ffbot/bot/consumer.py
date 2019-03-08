@@ -12,7 +12,10 @@ import pymysql
 import datetime
 import gc
 import traceback
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
+LOGGER = logging.getLogger(__name__)
 
 class WSConsumer(AsyncWebsocketConsumer):
 
@@ -24,13 +27,11 @@ class WSConsumer(AsyncWebsocketConsumer):
         await self.close()
 
     # serialize msg to fit <http api for coolq>
-    def serialize(self, action, params, echo=None):
+    def serialize(self, action, params):
         text_data = {
             'action': action,
             'params': params,
         }
-        if echo:
-            text_data['echo'] = echo
         event = {'text': json.dump(text_data)}
         return event
 
@@ -43,11 +44,16 @@ class WSConsumer(AsyncWebsocketConsumer):
         msg = json.loads(text_data)
         try:
             self.post_type = msg['post_type']
-            self.msg_type = msg['message_type']
-            self.message = msg['message']
+            self.qid = msg['X-Self-ID']
         except:
-            traceback.print_exc()
+            LOGGER.error('Unable to get post_type')
+        if self.post_type == 'event':
+            try:
+                self.msg_type = msg['message_type']
+                self.message = msg['message']
+            except:
+                LOGGER.error('Event message without Message')
         if 'message' in msg.keys() and self.msg_type == 'private':
-            print(self.message)
+            print('{} gets one message: {}'.format(self.qid, self.message))
 
 
