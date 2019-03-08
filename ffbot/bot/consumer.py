@@ -44,15 +44,16 @@ class WSConsumer(AsyncWebsocketConsumer):
         msg = json.loads(text_data)
         try:
             self.post_type = msg['post_type']
-            self.qid = msg['X-Self-ID']
         except:
             LOGGER.error('Unable to get post_type')
+            return
         if self.post_type == 'event':
             try:
                 self.msg_type = msg['message_type']
                 self.message = msg['message']
             except:
                 LOGGER.error('Event message without Message')
+                return
         if 'message' in msg.keys() and self.msg_type == 'private':
             print('{} gets one message: {}'.format(self.qid, self.message))
 
