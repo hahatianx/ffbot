@@ -79,5 +79,5 @@ class WSConsumer(AsyncWebsocketConsumer):
                 LOGGER.error('Event message without Message')
                 return
         if 'message' in msg.keys():
-            self.process(msg)
+            await self.process(msg)
 
