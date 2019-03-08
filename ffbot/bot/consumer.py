@@ -60,6 +60,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         print('process first-phase finished, phase code %d' % phase)
         (cmd_str, *kargs) = plain_text.split()
         if cmd_str in Handler_dict:
+            print('hit')
             return_msg = Handler_dict[cmd_str](*kargs)
             await self.send_message(msg_type == 'private', target_id, return_msg)
 
