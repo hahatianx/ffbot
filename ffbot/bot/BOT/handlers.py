@@ -2,4 +2,10 @@
 
 
 def EchoHandler(*kargs):
-    pass
+    ret_msg = ''
+    if len(kargs) != 1:
+        ret_msg = '你的指令好像用错了鸭\n正确用法:/echo <string>\n'
+    else:
+        ret_msg = kargs[0]
+    return ret_msg
+

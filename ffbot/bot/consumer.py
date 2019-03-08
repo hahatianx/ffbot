@@ -5,9 +5,15 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 import gc
 import logging
+from bot.BOT.handlers import EchoHandler
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
+
+Handler_dict = {
+    '/echo': EchoHandler,
+
+}
 
 class WSConsumer(AsyncWebsocketConsumer):
 
@@ -19,21 +25,40 @@ class WSConsumer(AsyncWebsocketConsumer):
         await self.close()
 
     # serialize msg to fit <http api for coolq>
-    def serialize(self, action, params):
+    async def serialize(self, action, params):
         text_data = {
             'action': action,
             'params': params,
         }
-        event = {'text': json.dump(text_data)}
-        return event
-
-    # sending msg
-    async def send_msg(self, event):
+        event = {'type': 'send.event', 'text': json.dump(text_data)}
         await self.send(event['text'])
 
+    async def send_message(self, is_private, tar_id, message):
+        if is_private:
+            await self.serialize('send_private_msg', {'user_id': tar_id, 'message': message})
+        else:
+            await self.serialize('send_group_msg', {'group_id': tar_id, 'message': message})
+
     def process(self, msg):
-        plain_text = msg['message'].encode('utf-8')
-        print(plain_text)
+        try:
+            plain_text = msg['message'].encode('utf-8')
+        except:
+            LOGGER.ERROR('Process Unable to get message')
+            return
+        try:
+            msg_type = msg['message_type']
+        except:
+            LOGGER.ERROR('Message type not found')
+            return
+        try:
+            target_id = msg['user_id'] if msg_type == 'private' else msg['group_id']
+        except:
+            LOGGER.ERROR('Message target not found')
+            return
+        (cmd_str, *kargs) = plain_text.split()
+        if cmd_str in Handler_dict:
+            return_msg = Handler_dict[cmd_str](*kargs)
+            await self.send_message(msg_type == 'private', target_id, return_msg)
 
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):
