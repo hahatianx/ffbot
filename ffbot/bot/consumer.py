@@ -5,7 +5,7 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 import gc
 import logging
-from bot.BOT.handlers import EchoHandler, AboutHandler, NuannuanHandler
+from bot.BOT.handlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
@@ -14,6 +14,7 @@ Handler_dict = {
     '/echo': EchoHandler,
     '/about': AboutHandler,
     '/nuannuan': NuannuanHandler,
+    '/search': SearchItemHandler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):
