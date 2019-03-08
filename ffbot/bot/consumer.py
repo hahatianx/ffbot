@@ -39,7 +39,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         else:
             await self.serialize('send_group_msg', {'group_id': tar_id, 'message': message})
 
-    def process(self, msg):
+    async def process(self, msg):
         try:
             plain_text = msg['message'].encode('utf-8')
         except:
