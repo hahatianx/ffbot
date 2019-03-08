@@ -78,5 +78,6 @@ class WSConsumer(AsyncWebsocketConsumer):
                 LOGGER.error('Event message without Message')
                 return
         if 'message' in msg.keys():
+            print(msg.encode('utf-8'))
             self.process(msg)
 
