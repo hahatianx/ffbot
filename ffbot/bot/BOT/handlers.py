@@ -36,5 +36,6 @@ def SearchItemHandler(*kargs):
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/search <item>'
     else:
         ret_msg = 'yukari在网上找呀找...\n搜索名：%s\nhttps://ff14.huijiwiki.com/wiki/ItemSearch?name=%s' % (kargs[0], kargs[0])
+        ret_msg = ret_msg.encode('utf-8')
     return ret_msg
 
