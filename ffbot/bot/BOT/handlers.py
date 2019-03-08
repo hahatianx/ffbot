@@ -1,5 +1,7 @@
 #coding=utf-8
 
+import requests
+import json
 
 def EchoHandler(*kargs):
     ret_msg = ''
@@ -14,4 +16,17 @@ def AboutHandler(*kargs):
     '''
     return ret_msg
 
+def NuannuanHandler(*kargs):
+    ret_msg = ''
+    try:
+        r = requests.get(url='http://yotsuyu.yorushika.tk:5000')
+        r = json.load(r.text)
+        if r['success']:
+            ret_msg = r['content']
+            ret_msg += '\nPowered by 露儿[Yorushika]'
+        else:
+            ret_msg = 'An error occurred.'
+    except Exception as e:
+        ret_msg = 'Error %s' % str(e)
+    return ret_msg
 
