@@ -47,7 +47,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         except:
             LOGGER.error('Unable to get post_type')
             return
-        if self.post_type == 'event':
+        if self.post_type == 'message':
             try:
                 self.msg_type = msg['message_type']
                 self.message = msg['message']
