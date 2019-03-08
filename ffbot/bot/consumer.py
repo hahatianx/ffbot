@@ -2,16 +2,8 @@
 
 
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
-from channels.exceptions import StopConsumer
 import json
-import pytz
-import re
-import os
-import pymysql
-import datetime
 import gc
-import traceback
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
@@ -39,6 +31,10 @@ class WSConsumer(AsyncWebsocketConsumer):
     async def send_msg(self, event):
         await self.send(event['text'])
 
+    def process(self, msg):
+        plain_text = msg['message'].encode('utf-8')
+        print(plain_text)
+
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):
         msg = json.loads(text_data)
@@ -54,7 +50,6 @@ class WSConsumer(AsyncWebsocketConsumer):
             except:
                 LOGGER.error('Event message without Message')
                 return
-        if 'message' in msg.keys() and self.msg_type == 'private':
-            print('The robot gets one message: {}'.format(self.message))
-
+        if 'message' in msg.keys():
+            self.process(msg)
 
