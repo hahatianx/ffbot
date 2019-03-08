@@ -40,5 +40,5 @@ class WSConsumer(AsyncWebsocketConsumer):
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):
         msg = json.loads(text_data)
-        self.send(msg)
+        print(msg.decode())
 
