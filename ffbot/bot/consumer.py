@@ -56,6 +56,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         except:
             LOGGER.ERROR('Message target not found')
             return
+        print('process first-phase finished')
         (cmd_str, *kargs) = plain_text.split()
         if cmd_str in Handler_dict:
             return_msg = Handler_dict[cmd_str](*kargs)
