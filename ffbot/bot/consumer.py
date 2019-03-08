@@ -11,6 +11,7 @@ import os
 import pymysql
 import datetime
 import gc
+import traceback
 
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -40,5 +41,13 @@ class WSConsumer(AsyncWebsocketConsumer):
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):
         msg = json.loads(text_data)
-        print(msg.decode())
+        try:
+            self.post_type = msg['post_type']
+            self.msg_type = msg['message_type']
+            self.message = msg['message']
+        except:
+            traceback.print_exc()
+        if 'message' in msg.keys() and self.msg_type == 'private':
+            print(self.message)
+
 
