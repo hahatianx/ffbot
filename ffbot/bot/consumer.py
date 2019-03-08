@@ -59,6 +59,7 @@ class WSConsumer(AsyncWebsocketConsumer):
             phase |= (1 << 2)
         print('process first-phase finished, phase code %d' % phase)
         (cmd_str, *kargs) = plain_text.split()
+        print(cmd_str)
         if cmd_str in Handler_dict:
             print('hit')
             return_msg = Handler_dict[cmd_str](*kargs)
