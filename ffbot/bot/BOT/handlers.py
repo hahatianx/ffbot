@@ -22,14 +22,13 @@ def NuannuanHandler(*kargs):
     try:
         r = requests.get(url='http://yotsuyu.yorushika.tk:5000/')
         tx = json.load(r.text)
-        print(tx)
         if tx['success']:
             ret_msg = tx['content']
             ret_msg += '\nby 露儿[Yorushika]'
         else:
             ret_msg = 'An error occurred.'
     except Exception as e:
-        ret_msg = 'Error {}'.format(type(e))
+        ret_msg = e.tostring()
     return ret_msg
 
 def SearchItemHandler(*kargs):
