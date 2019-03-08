@@ -57,7 +57,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         except:
             LOGGER.ERROR('Message target not found')
             phase |= (1 << 2)
-        if not phase:
+        if phase:
             return
         # print('process first-phase finished, phase code %d' % phase)
         (cmd_str, *kargs) = plain_text.split()
