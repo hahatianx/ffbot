@@ -2,7 +2,8 @@
 
 import requests
 import json
-import urllib
+from urllib.request import quote
+
 
 def EchoHandler(*kargs):
     ret_msg = ''
@@ -14,6 +15,16 @@ def EchoHandler(*kargs):
 
 def AboutHandler(*kargs):
     ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n全部代码来自@紫上
+    '''
+    return ret_msg
+
+def HelpHandler(*kargs):
+    ret_msg = '''
+    /about:  作者信息
+    /echo:   复读机
+    /dress:  查看暖暖作业
+    /search: 查找物品
+    emmm,目前只有那么多啦
     '''
     return ret_msg
 
@@ -32,11 +43,11 @@ def NuannuanHandler(*kargs):
     return ret_msg
 
 def SearchItemHandler(*kargs):
-    ret_msg = ''
     if len(kargs) != 1:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/search <item>'
     else:
-        link = urllib.quote(('https://ff14.huijiwiki.com/wiki/ItemSearch?name=%s' % kargs[0]))
+        link = 'https://ff14.huijiwiki.com/wiki/ItemSearch?name=%s' % kargs[0]
+        link = quote(link, safe=';/?:@&=+$,', encoding='utf-8')
         ret_msg = 'yukari在网上找呀找...\n搜索名：%s\n' % kargs[0]
         ret_msg += link
     return ret_msg
