@@ -41,22 +41,23 @@ class WSConsumer(AsyncWebsocketConsumer):
             await self.serialize('send_group_msg', {'group_id': tar_id, 'message': message})
 
     async def process(self, msg):
+        phase = 0
         try:
             plain_text = msg['message'].encode('utf-8')
         except:
             LOGGER.ERROR('Process Unable to get message')
-            return
+            phase |= 1
         try:
             msg_type = msg['message_type']
         except:
             LOGGER.ERROR('Message type not found')
-            return
+            phase |= (1 << 1)
         try:
             target_id = msg['user_id'] if msg_type == 'private' else msg['group_id']
         except:
             LOGGER.ERROR('Message target not found')
-            return
-        print('process first-phase finished')
+            phase |= (1 << 2)
+        print('process first-phase finished, phase code %d' % phase)
         (cmd_str, *kargs) = plain_text.split()
         if cmd_str in Handler_dict:
             return_msg = Handler_dict[cmd_str](*kargs)
@@ -78,6 +79,5 @@ class WSConsumer(AsyncWebsocketConsumer):
                 LOGGER.error('Event message without Message')
                 return
         if 'message' in msg.keys():
-            print(msg.encode('utf-8'))
             self.process(msg)
 
