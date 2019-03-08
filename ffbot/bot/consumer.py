@@ -34,6 +34,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         await self.send(event['text'])
 
     async def send_message(self, is_private, tar_id, message):
+        print(is_private, tar_id, message.encode('utf-8'))
         if is_private:
             await self.serialize('send_private_msg', {'user_id': tar_id, 'message': message})
         else:
