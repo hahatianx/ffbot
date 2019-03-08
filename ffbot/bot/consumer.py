@@ -30,7 +30,7 @@ class WSConsumer(AsyncWebsocketConsumer):
             'action': action,
             'params': params,
         }
-        event = {'type': 'send.event', 'text': json.dump(text_data)}
+        event = {'type': 'send.event', 'text': json.dumps(text_data)}
         await self.send(event['text'])
 
     async def send_message(self, is_private, tar_id, message):
