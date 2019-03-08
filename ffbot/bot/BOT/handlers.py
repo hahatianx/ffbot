@@ -20,7 +20,7 @@ def AboutHandler(*kargs):
 def NuannuanHandler(*kargs):
     ret_msg = ''
     try:
-        r = requests.get(url='http://yotsuyu.yorushika.tk:5000')
+        r = requests.get(url='http://yotsuyu.yorushika.tk:5000/')
         r = json.load(r.text)
         if r['success']:
             ret_msg = r['content']
