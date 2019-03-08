@@ -10,12 +10,7 @@ def EchoHandler(*kargs):
     return ret_msg
 
 def AboutHandler(*kargs):
-    ret_msg = '''
-        yukari,
-        copyright by 紫上
-        yukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料
-        框架思路借鉴于獭獭@Bluefissure
-        全部代码来自@紫上
+    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n全部代码来自@紫上
     '''
     return ret_msg
 
