@@ -43,7 +43,7 @@ class WSConsumer(AsyncWebsocketConsumer):
     async def process(self, msg):
         phase = 0
         try:
-            plain_text = msg['message'].encode('utf-8')
+            plain_text = msg['message']
         except:
             LOGGER.ERROR('Process Unable to get message')
             phase |= 1
