@@ -55,6 +55,6 @@ class WSConsumer(AsyncWebsocketConsumer):
                 LOGGER.error('Event message without Message')
                 return
         if 'message' in msg.keys() and self.msg_type == 'private':
-            print('{} gets one message: {}'.format(self.qid, self.message))
+            print('The robot gets one message: {}'.format(self.message))
 
 
