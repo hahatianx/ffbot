@@ -28,7 +28,7 @@ def NuannuanHandler(*kargs):
         else:
             ret_msg = 'An error occurred.'
     except Exception as e:
-        ret_msg = 'Error %s' % str(e)
+        ret_msg = 'Error {}'.format(e)
     return ret_msg
 
 def SearchItemHandler(*kargs):
