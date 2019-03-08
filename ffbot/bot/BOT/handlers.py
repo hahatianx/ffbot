@@ -9,3 +9,14 @@ def EchoHandler(*kargs):
         ret_msg = kargs[0]
     return ret_msg
 
+def AboutHandler(*kargs):
+    ret_msg = '''
+        yukari,\n
+        copyright by 紫上\n
+        yukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n
+        框架思路借鉴于獭獭@Bluefissure
+        全部代码来自@紫上
+    '''
+    return ret_msg
+
+

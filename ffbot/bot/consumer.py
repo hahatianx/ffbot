@@ -5,14 +5,14 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 import gc
 import logging
-from bot.BOT.handlers import EchoHandler
+from bot.BOT.handlers import EchoHandler, AboutHandler
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
 
 Handler_dict = {
     '/echo': EchoHandler,
-
+    '/about': AboutHandler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -57,11 +57,11 @@ class WSConsumer(AsyncWebsocketConsumer):
         except:
             LOGGER.ERROR('Message target not found')
             phase |= (1 << 2)
-        print('process first-phase finished, phase code %d' % phase)
+        if not phase:
+            return
+        # print('process first-phase finished, phase code %d' % phase)
         (cmd_str, *kargs) = plain_text.split()
-        print(cmd_str)
         if cmd_str in Handler_dict:
-            print('hit')
             return_msg = Handler_dict[cmd_str](*kargs)
             await self.send_message(msg_type == 'private', target_id, return_msg)
 
