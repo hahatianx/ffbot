@@ -7,10 +7,11 @@ from urllib.request import quote
 
 def EchoHandler(*kargs):
     ret_msg = ''
-    if len(kargs) != 1:
+    if len(kargs) == 0:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/echo <string>'
     else:
-        ret_msg = '/echo ' + kargs[0]
+        for x in kargs:
+            ret_msg += x
     return ret_msg
 
 def AboutHandler(*kargs):
