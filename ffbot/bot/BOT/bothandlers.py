@@ -11,7 +11,8 @@ def EchoHandler(*kargs):
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/echo <string>'
     else:
         for x in kargs:
-            ret_msg += x
+            ret_msg += x + ' '
+        ret_msg = ret_msg[:-1]
     return ret_msg
 
 def AboutHandler(*kargs):
