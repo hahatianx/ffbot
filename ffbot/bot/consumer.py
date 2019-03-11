@@ -72,7 +72,7 @@ class WSConsumer(AsyncWebsocketConsumer):
 
         # repeating doves
         #####special#####
-        *ls = plain_text.split()
+        [*ls] = plain_text.split()
         if len(ls) > 0:
             return_msg = this_sheep.handler(ls)
             if len(return_msg) > 0:
