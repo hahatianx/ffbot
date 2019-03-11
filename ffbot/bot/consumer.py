@@ -73,7 +73,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         # repeating doves
         #####special#####
         if cmd_str not in Handler_dict:
-            print [cmd_str].extend(kargs)
+            print([cmd_str].extend(kargs))
             return_msg = this_sheep.handler([cmd_str].extend(kargs))
             if len(return_msg) > 0:
                 await self.send_message(msg_type == 'private', target_id, return_msg)
