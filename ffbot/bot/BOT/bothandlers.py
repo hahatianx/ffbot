@@ -2,6 +2,7 @@
 
 import requests
 import json
+import random
 from urllib.request import quote
 
 
@@ -54,4 +55,33 @@ def SearchItemHandler(*kargs):
         ret_msg = 'yukari在网上找呀找...\n搜索名：%s\n' % kargs[0]
         ret_msg += link
     return ret_msg
+
+
+class Sheep(object):
+    def __init__(self):
+        self.prob = 0
+
+    def handler(self, *kargs):
+        ret_msg = ''
+        if kargs[0] == 'set_prob':
+            if kargs[1].isdigit():
+                self.set_prob(kargs[1])
+                ret_msg = '鸽子提醒复读概率: %s%' % kargs[1]
+        else:
+            flag = False
+            for str_ in kargs:
+                ret_msg += str_
+                ret_msg += ' '
+                if '鸽子' in str_:
+                    flag = True
+            if flag and random.random() < self.prob:
+                ret_msg = ret_msg[:-1].replace('鸽子', '鸽羊')
+            else:
+                ret_msg = ''
+        return ret_msg
+
+    def set_prob(self, prob):
+        self.prob = float(prob) / 100
+
+
 

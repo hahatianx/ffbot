@@ -6,9 +6,11 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler
+from bot.BOT.bothandlers import Sheep
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
+this_sheep = Sheep()
 
 Handler_dict = {
     '/echo': EchoHandler,
@@ -67,6 +69,14 @@ class WSConsumer(AsyncWebsocketConsumer):
         if cmd_str in Handler_dict:
             return_msg = Handler_dict[cmd_str](*kargs)
             await self.send_message(msg_type == 'private', target_id, return_msg)
+
+        # repeating doves
+        #####special#####
+        if cmd_str not in Handler_dict:
+            return_msg = this_sheep.handler([cmd_str].extend(kargs))
+            if len(return_msg) > 0:
+                await self.send_message(msg_type == 'private', target_id, return_msg)
+        #####special#####
 
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):
