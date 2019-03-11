@@ -61,9 +61,9 @@ class Sheep(object):
     def __init__(self):
         self.prob = 0
 
-    def handler(self, *kargs):
+    def handler(self, kargs):
         ret_msg = ''
-        if kargs[0] == 'set_prob':
+        if len(kargs) > 1 and kargs[0] == 'set_prob':
             if kargs[1].isdigit():
                 self.set_prob(kargs[1])
                 ret_msg = '鸽子提醒复读概率: %s%' % kargs[1]
