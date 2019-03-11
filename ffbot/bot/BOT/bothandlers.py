@@ -18,7 +18,7 @@ def EchoHandler(*kargs):
     return ret_msg
 
 def AboutHandler(*kargs):
-    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n全部代码来自@紫上
+    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n全部代码来自@紫上\nlink: https://github.com/hahatianx/ffbot
     '''
     return ret_msg
 
