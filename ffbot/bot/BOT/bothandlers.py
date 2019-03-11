@@ -66,7 +66,7 @@ class Sheep(object):
         if len(kargs) > 1 and kargs[0] == 'set_prob':
             if kargs[1].isdigit():
                 self.set_prob(kargs[1])
-                ret_msg = '鸽子提醒复读概率: %s%' % kargs[1]
+                ret_msg = '鸽子提醒复读概率: %s / 100' % kargs[1]
         else:
             flag = False
             for str_ in kargs:
