@@ -4,6 +4,7 @@ import requests
 import json
 import random
 import re
+from .models import Class, Boss, NickBoss, NickClass
 from urllib.request import quote
 
 
@@ -145,6 +146,17 @@ def DpsHandler(*kargs):
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>'
     else:
         boss_nick, class_nick = kargs[0], kargs[1]
+        class_obj = NickClass.objects.filter(nick_name=class_nick)
+        boss_obj = NickBoss.objects.filter(nick_name=boss_nick)
+        if len(boss_obj) == 0:
+            pass
+        else:
+            boss_name = boss_obj[0].boss_id.name
+        if len(class_obj) == 0:
+            pass
+        else:
+            class_name = class_obj[0].class_id.name
+        print(boss_name, class_name)
         ret_msg = ''
     return ret_msg
 
