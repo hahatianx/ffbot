@@ -6,6 +6,9 @@ from django.db import models
 class Class(models.Model):
     name = models.CharField(max_length=15)
 
+    def __unicode__(self):
+        return self.name
+
 
 class NickClass(models.Model):
     nick_name = models.CharField(max_length=15)
@@ -17,6 +20,9 @@ class Boss(models.Model):
     quest_id = models.IntegerField()
     boss_id = models.IntegerField()
     add_time = models.BigIntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
 
 
 class NickBoss(models.Model):
