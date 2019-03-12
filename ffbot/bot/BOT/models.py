@@ -6,7 +6,7 @@ from django.db import models
 class Class(models.Model):
     name = models.CharField(max_length=15)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -21,7 +21,7 @@ class Boss(models.Model):
     boss_id = models.IntegerField()
     add_time = models.BigIntegerField(default=0)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
