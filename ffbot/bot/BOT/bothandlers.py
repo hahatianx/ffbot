@@ -154,12 +154,14 @@ def DpsHandler(*kargs):
         boss_obj = NickBoss.objects.filter(nick_name=boss_nick)
         fail = False
         if len(boss_obj) == 0:
-            ret_msg = 'yukari没有找到你指定的boss {} 的信息\n'.format(boss_nick)
+            ret_msg = 'yukari没有找到你指定的boss {} 的信息'.format(boss_nick)
             fail = True
         else:
             r_boss = boss_obj[0].boss_id
         if len(class_obj) == 0:
-            ret_msg += 'yukari没有找到你指定的职业 {} 的信息\n'.format(class_nick)
+            if len(ret_msg) > 0:
+                ret_msg += '\n'
+            ret_msg += 'yukari没有找到你指定的职业 {} 的信息'.format(class_nick)
             fail = True
         else:
             r_class = class_obj[0].class_id
@@ -171,10 +173,11 @@ def DpsHandler(*kargs):
                 ret_msg = '以下是国际服FFLOGS {} 在 {} 中的dps表现:\n'.format(r_class.name, r_boss.name)
                 for k, v in msg_dict.items():
                     ret_msg += '%s%%: %.2f\n' % (k, v)
+                ret_msg = ret_msg[:-1]
             except:
                 traceback.print_exc()
-                ret_msg = '抓取出现bug\n'
-    return ret_msg[:-1]
+                ret_msg = '抓取出现bug'
+    return ret_msg
 
 
 class Sheep(object):
