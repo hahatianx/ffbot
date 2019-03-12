@@ -57,7 +57,7 @@ def SearchItemHandler(*kargs):
         ret_msg += link
     return ret_msg
 
-raid_config_fd = open('./raid_handler_config.json', 'r', encoding='utf-8')
+raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
 raid_config_dict = json.load(raid_config_fd)
 
 def get_raid_info(tar_url, tar_name, tar_server):
