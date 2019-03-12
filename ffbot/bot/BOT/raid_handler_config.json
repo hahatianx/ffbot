@@ -1,0 +1,32 @@
+{
+  "阿尔法幻境": "http://act.ff.sdo.com/20180525HeroList/Server/HeroList190128.ashx",
+  "西格玛幻境": "http://act.ff.sdo.com/20180525HeroList/Server/HeroList171213.ashx",
+  "德尔塔幻境": "http://act.ff.sdo.com/20171213HeroList/Server/HeroList171213.ashx",
+  "幻影群岛": {
+    "groupID": 5
+  },
+  "拉诺西亚": {
+    "groupID": 3
+  },
+  "紫水栈桥": {
+    "groupID": 4
+  },
+  "摩杜纳": {
+    "groupID": 6
+  },
+  "神意之地": {
+    "groupID": 23
+  },
+  "静语庄园": {
+    "groupID": 24
+  },
+  "萌芽池": {
+    "groupID": 25
+  },
+  "延夏": {
+    "groupID": 26
+  },
+  "红玉海": {
+    "groupID": 27
+  }
+}

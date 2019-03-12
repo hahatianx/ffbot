@@ -56,6 +56,54 @@ def SearchItemHandler(*kargs):
         ret_msg += link
     return ret_msg
 
+raid_config_fd = open('./raid_handler_config.json', 'r', encoding='utf-8')
+raid_config_dict = json.load(raid_config_fd)
+
+def get_raid_info(tar_url, tar_name, tar_server):
+    ret_msg = ''
+    tar_data = {
+        'method': 'queryhreodata',
+        'stage': 1,
+        'name': tar_name,
+        'areaID': 1,
+        'groupID': tar_server,
+    }
+    r = requests.post(url=tar_url, data=tar_data)
+    rep = json.loads(r.text)
+    if rep['Code'] != 0:
+        ret_msg += rep['Message']
+    else:
+        for lv in range(0, 4):
+            tar_str = 'Level%s' % (lv + 1)
+            date_time = rep['Attach'][tar_str]
+            header_str = '第{}层: '.format(lv + 1)
+            ret_msg += header_str
+            if date_time is None or len(date_time) < 8:
+                ret_msg += '找不到记录\n'
+            else:
+                ret_msg += '{}年{}月{}日\n'.format(date_time[:4], date_time[4:6], date_time[6:])
+    return ret_msg
+
+
+def RaidHandler(*kargs):
+    print(raid_config_dict)
+    if len(kargs) != 2:
+        ret_msg = '你的指令好像用错了鸭\n正确用法:\n/raid <name> <server_name>'
+    else:
+        s_name, s_server = kargs[0], kargs[1]
+        if s_server not in raid_config_dict:
+            ret_msg = 'yukari好像找不到这个服务器，服务器名字要写全哦'
+        else:
+            ret_msg = '{}({})的欧米茄零式挑战记录如下:\n'.format(s_name, s_server)
+            tar_lst = ['阿尔法幻境', '西格玛幻境', '德尔塔幻境']
+            tar_server = raid_config_dict[s_server]['groupID']
+            for raids in tar_lst:
+                tar_url = raid_config_dict[raids]
+                ret_msg += raids
+                ret_msg += '\n'
+                ret_msg += get_raid_info(tar_url, s_name, tar_server)
+    return ret_msg
+
 
 class Sheep(object):
     def __init__(self):
@@ -84,4 +132,5 @@ class Sheep(object):
         self.prob = float(prob) / 100
 
 
+if __name__ == '__main__':
 
