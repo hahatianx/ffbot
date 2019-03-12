@@ -4,6 +4,7 @@ import requests
 import json
 import random
 import re
+import traceback
 import time
 from .models import Class, Boss, NickBoss, NickClass
 from urllib.request import quote
@@ -162,14 +163,15 @@ def DpsHandler(*kargs):
             r_class = class_obj[0].class_id
         if not fail:
             day_index = (int(time.time()) - r_boss.add_time) // (24 * 3600)
-            #print(day_index)
+            print(day_index)
             try:
                 msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
                 ret_msg = '以下是国际服FFLOGS {} 在 {} 中的dps表现:\n'.format(r_class.name, r_boss.name)
                 for k, v in msg_dict.values():
                     ret_msg += '{}%%: {}\n'.format(k, v)
             except:
-                ret_msg = '抓取出现bug'
+                traceback.print_exc()
+                ret_msg = '抓取出现bug\n'
     return ret_msg[:-1]
 
 
