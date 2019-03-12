@@ -28,6 +28,7 @@ def HelpHandler(*kargs):
     /echo:   复读机
     /dress:  查看暖暖作业
     /search: 查找物品
+    /raid:   查看raid攻略情况
     emmm,目前只有那么多啦
     '''
     return ret_msg
@@ -130,7 +131,4 @@ class Sheep(object):
 
     def set_prob(self, prob):
         self.prob = float(prob) / 100
-
-
-if __name__ == '__main__':
 
