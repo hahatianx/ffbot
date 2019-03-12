@@ -3,6 +3,7 @@
 import requests
 import json
 import random
+import re
 from urllib.request import quote
 
 
@@ -17,10 +18,12 @@ def EchoHandler(*kargs):
         ret_msg = ret_msg[:-1]
     return ret_msg
 
+
 def AboutHandler(*kargs):
-    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n全部代码来自@紫上\nlink: https://github.com/hahatianx/ffbot
+    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相关资料\n框架思路借鉴于獭獭@Bluefissure\n代码来自@紫上\nlink: https://github.com/hahatianx/ffbot
     '''
     return ret_msg
+
 
 def HelpHandler(*kargs):
     ret_msg = '''
@@ -29,9 +32,11 @@ def HelpHandler(*kargs):
     /dress:  查看暖暖作业
     /search: 查找物品
     /raid:   查看raid攻略情况
+    /tools:  辅助网站网址链接
     emmm,目前只有那么多啦
     '''
     return ret_msg
+
 
 def NuannuanHandler(*kargs):
     ret_msg = ''
@@ -47,6 +52,7 @@ def NuannuanHandler(*kargs):
         ret_msg = 'Error'
     return ret_msg
 
+
 def SearchItemHandler(*kargs):
     if len(kargs) != 1:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/search <item>'
@@ -57,8 +63,10 @@ def SearchItemHandler(*kargs):
         ret_msg += link
     return ret_msg
 
+
 raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
 raid_config_dict = json.load(raid_config_fd)
+
 
 def get_raid_info(tar_url, tar_name, tar_server):
     ret_msg = ''
@@ -102,6 +110,42 @@ def RaidHandler(*kargs):
                 ret_msg += raids
                 ret_msg += '\n'
                 ret_msg += get_raid_info(tar_url, s_name, tar_server)
+    return ret_msg
+
+
+def ToolsiteHandler(*kargs):
+    ret_msg = '''
+    素素攻略站: https://www.ffxiv.cn/
+    捕鱼人(猫腹): http://cn.ff14angler.com/
+    DPS警察: https://xivanalysis.com/
+    团辅计算器: http://www.xivrdps.com/
+    FF LOGS: https://www.fflogs.com/
+    '''
+    return ret_msg
+
+
+def get_dps_list(quest_id, boss_id, class_name, day_index):
+    ff_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/100/8/1/100/1000/7/0/Global/{}/All/0/normalized/single/0/-1/'.format(quest_id, boss_id, class_name)
+    r = requests.get(url=ff_url)
+    per_list = [10, 25, 50, 75, 95, 99,]
+    pattern_mch = [re.compile('series{}'.format(x)+r'.data.push\([+-]?(0|([1-9]\d*))(\.\d+)?\)') for x in per_list]
+    day_index = max(0, day_index - 1)
+    ret_dict = dict()
+    for ptn, perc in zip(pattern_mch, per_list):
+        target_tuple = ptn.findall(r.text)[day_index]
+        dps_string = target_tuple[1] + target_tuple[2]
+        dps_float = float(dps_string) if len(dps_string) > 0 else 0
+        ret_dict[perc] = dps_float
+    return ret_dict
+
+
+def DpsHandler(*kargs):
+    k_len = len(kargs)
+    if k_len != 2:
+        ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>'
+    else:
+        boss_nick, class_nick = kargs[0], kargs[1]
+        ret_msg = ''
     return ret_msg
 
 
