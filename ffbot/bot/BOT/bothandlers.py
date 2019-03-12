@@ -87,7 +87,6 @@ def get_raid_info(tar_url, tar_name, tar_server):
 
 
 def RaidHandler(*kargs):
-    print(raid_config_dict)
     if len(kargs) != 2:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/raid <name> <server_name>'
     else:
