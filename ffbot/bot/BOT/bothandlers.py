@@ -167,7 +167,7 @@ def DpsHandler(*kargs):
             try:
                 msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
                 ret_msg = '以下是国际服FFLOGS {} 在 {} 中的dps表现:\n'.format(r_class.name, r_boss.name)
-                for k, v in msg_dict.values():
+                for k, v in msg_dict.items():
                     ret_msg += '{}%%: {}\n'.format(k, v)
             except:
                 traceback.print_exc()
