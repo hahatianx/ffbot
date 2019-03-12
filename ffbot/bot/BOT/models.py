@@ -16,6 +16,7 @@ class Boss(models.Model):
     name = models.CharField(max_length=15)
     quest_id = models.IntegerField()
     boss_id = models.IntegerField()
+    add_time = models.BigIntegerField()
 
 
 class NickBoss(models.Model):
