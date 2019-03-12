@@ -145,6 +145,7 @@ def get_dps_list(quest_id, boss_id, class_name, day_index):
 
 def DpsHandler(*kargs):
     k_len = len(kargs)
+    ret_msg = ''
     if k_len != 2:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>'
     else:
