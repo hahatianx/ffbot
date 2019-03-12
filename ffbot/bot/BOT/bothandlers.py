@@ -4,6 +4,7 @@ import requests
 import json
 import random
 import re
+import time
 from .models import Class, Boss, NickBoss, NickClass
 from urllib.request import quote
 
@@ -148,17 +149,24 @@ def DpsHandler(*kargs):
         boss_nick, class_nick = kargs[0], kargs[1]
         class_obj = NickClass.objects.filter(nick_name=class_nick)
         boss_obj = NickBoss.objects.filter(nick_name=boss_nick)
+        fail = False
         if len(boss_obj) == 0:
-            pass
+            ret_msg = 'yukari没有找到你指定的boss {} 的信息\n'.format(boss_nick)
+            fail = True
         else:
-            boss_name = boss_obj[0].boss_id.name
+            r_boss = boss_obj[0].boss_id
         if len(class_obj) == 0:
-            pass
+            ret_msg += 'yukari没有找到你指定的职业 {} 的信息\n'.format(class_nick)
+            fail = True
         else:
-            class_name = class_obj[0].class_id.name
-        print(boss_name, class_name)
-        ret_msg = ''
-    return ret_msg
+            r_class = class_obj[0].class_id
+        if not fail:
+            day_index = (int(time.time()) - r_boss.add_time) // (24 * 3600)
+            msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
+            ret_msg = '以下是国际服FFLOGS {} 在 {} 中的dps表现:\n'.format(r_class.name, r_boss.name)
+            for k, v in msg_dict.values():
+                ret_msg += '{}%%: {}\n'.format(k, v)
+    return ret_msg[:-1]
 
 
 class Sheep(object):
