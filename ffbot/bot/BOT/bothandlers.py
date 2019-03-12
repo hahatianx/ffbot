@@ -162,7 +162,9 @@ def DpsHandler(*kargs):
             r_class = class_obj[0].class_id
         if not fail:
             day_index = (int(time.time()) - r_boss.add_time) // (24 * 3600)
-            msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
+            print(day_index)
+            # msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
+            msg_dict = {}
             ret_msg = '以下是国际服FFLOGS {} 在 {} 中的dps表现:\n'.format(r_class.name, r_boss.name)
             for k, v in msg_dict.values():
                 ret_msg += '{}%%: {}\n'.format(k, v)
