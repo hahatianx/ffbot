@@ -144,28 +144,36 @@ def get_dps_list(quest_id, boss_id, class_name, day_index):
 
 
 def DpsHandler(*kargs):
+
+    def isascii(t_str):
+        return all(ord(c) < 128 for c in t_str)
+
     k_len = len(kargs)
     ret_msg = ''
     if k_len != 2:
         ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>'
     else:
         boss_nick, class_nick = kargs[0], kargs[1]
-        class_obj = NickClass.objects.filter(nick_name=class_nick)
-        boss_obj = NickBoss.objects.filter(nick_name=boss_nick)
-        fail = False
-        if len(boss_obj) == 0:
+        ascii_fail = False
+        if not isascii(boss_nick) or not isascii(class_nick):
+            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮你查了'
+            ascii_fail = True
+        class_obj = NickClass.objects.filter(nick_name=class_nick) if not ascii_fail else None
+        boss_obj = NickBoss.objects.filter(nick_name=boss_nick) if not ascii_fail else None
+        db_search_fail = False
+        if boss_obj and len(boss_obj) == 0:
             ret_msg = 'yukari没有找到你指定的boss {} 的信息'.format(boss_nick)
-            fail = True
+            db_search_fail = True
         else:
             r_boss = boss_obj[0].boss_id
-        if len(class_obj) == 0:
+        if class_obj and len(class_obj) == 0:
             if len(ret_msg) > 0:
                 ret_msg += '\n'
             ret_msg += 'yukari没有找到你指定的职业 {} 的信息'.format(class_nick)
-            fail = True
+            db_search_fail = True
         else:
             r_class = class_obj[0].class_id
-        if not fail:
+        if not db_search_fail and not ascii_fail:
             day_index = (int(time.time()) - r_boss.add_time) // (24 * 3600)
             # print(day_index)
             try:
