@@ -154,13 +154,25 @@ def DpsHandler(*kargs):
 
     k_len = len(kargs)
     ret_msg = ''
-    if k_len != 2:
-        ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>'
+    if k_len == 1 and kargs[0] == 'help':
+        ret_msg = '/dps指代帮助:\n'
+        cls_obj = NickClass.objects.all()
+        bos_obj = NickBoss.objects.all()
+        ret_msg += '职业指代\n'
+        for obj in cls_obj:
+            ret_msg += '{}: {} -> {}\n'.format(obj.id, obj.nick_name, obj.class_id.name)
+        ret_msg ++ 'BOSS指代\n'
+        for obj in bos_obj:
+            ret_msg += '{}: {} -> {}\n'.format(obj.id, obj.nick_name, obj.boss_id.name)
+        ret_msg = ret_msg[:-1]
+    elif k_len != 2:
+        ret_msg = '你的指令好像用错了鸭\n正确用法:\n/dps <boss> <class>\nboss class具体指代表请查询/dps help'
     else:
         boss_nick, class_nick = kargs[0], kargs[1]
         ascii_fail = False
         if not isascii(boss_nick) or not isascii(class_nick):
-            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮你查了\n正确用法:\n/dps <boss> <class>'
+            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮\
+            你查了\n正确用法:\n/dps <boss> <class>\nboss class具体指代表请查询/dps help'
             ascii_fail = True
         if not ascii_fail:
             class_obj = NickClass.objects.filter(nick_name=class_nick)
