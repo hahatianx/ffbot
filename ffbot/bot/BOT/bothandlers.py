@@ -129,10 +129,14 @@ def ToolsiteHandler(*kargs):
 
 
 def get_dps_list(quest_id, boss_id, class_name, day_index):
-    ff_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/100/8/1/100/1000/7/0/Global/{}/All/0/normalized/single/0/-1/'.format(quest_id, boss_id, class_name)
+    ff_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/100/8/1\
+    /100/1000/7/0/Global/{}/All/0/normalized/single/0/-1/'.format(quest_id, boss_id, class_name)
     r = requests.get(url=ff_url)
-    per_list = [10, 25, 50, 75, 95, 99,]
-    pattern_mch = [re.compile('series{}'.format(x)+r'.data.push\([+-]?(0|([1-9]\d*))(\.\d+)?\)') for x in per_list]
+    per_list = [10, 25, 50, 75, 95, 99, ]
+    pattern_mch = [re.compile('series{}'.format(x)\
+                              +r'.data.push\([+-]?(0|([1-9]\d*))(\.\d+)?\)') for x in per_list]
+    per_list.append(100)
+    pattern_mch.append(re.compile('series'+r'.data.push\([+-]?(0|([1-9]\d*))(\.\d+)?\)'))
     day_index = max(0, day_index - 1)
     ret_dict = dict()
     for ptn, perc in zip(pattern_mch, per_list):
@@ -156,7 +160,7 @@ def DpsHandler(*kargs):
         boss_nick, class_nick = kargs[0], kargs[1]
         ascii_fail = False
         if not isascii(boss_nick) or not isascii(class_nick):
-            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮你查了'
+            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮你查了\n正确用法:\n/dps <boss> <class>'
             ascii_fail = True
         if not ascii_fail:
             class_obj = NickClass.objects.filter(nick_name=class_nick)
@@ -185,7 +189,7 @@ def DpsHandler(*kargs):
                     ret_msg = ret_msg[:-1]
                 except:
                     traceback.print_exc()
-                    ret_msg = '抓取出现bug'
+                    ret_msg = '抓取出现bug，快叫紫上上出来挨打'
     return ret_msg
 
 
