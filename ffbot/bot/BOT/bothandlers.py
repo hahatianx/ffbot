@@ -215,6 +215,8 @@ class Sheep(object):
             if kargs[1].isdigit():
                 self.set_prob(kargs[1])
                 ret_msg = '鸽子提醒复读概率: %s / 100' % kargs[1]
+        elif len(kargs) == 1 and kargs[0] == 'dove_prob':
+            ret_msg = '现在的鸽子复读概率{}%'.format(self.prob * 100)
         else:
             flag = False
             for str_ in kargs:
