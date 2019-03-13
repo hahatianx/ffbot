@@ -23,7 +23,7 @@ The whole project consists of several parts.  The backend is a Django applicatio
 based on Python3.  The user interface is a qq account, used to exchange information
 with other members in the QQ group.  The communication between the two ends is based on
 websocket, a full-duplex protocol.  Since no queue structure is applied, the whole
-project may be quite low-efficient. And that is why I do not recommended for heavy use.
+project may be quite low-efficient. And that is why I do not recommend for heavy use.
 
 ### Deployment
 Before deployment, you have to have two(recommended) machines(1 linux and 1 windows).
