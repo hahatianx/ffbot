@@ -162,12 +162,12 @@ def DpsHandler(*kargs):
             class_obj = NickClass.objects.filter(nick_name=class_nick)
             boss_obj = NickBoss.objects.filter(nick_name=boss_nick)
             db_search_fail = False
-            if boss_obj and len(boss_obj) == 0:
+            if len(boss_obj) == 0:
                 ret_msg = 'yukari没有找到你指定的boss {} 的信息'.format(boss_nick)
                 db_search_fail = True
             else:
                 r_boss = boss_obj[0].boss_id
-            if class_obj and len(class_obj) == 0:
+            if len(class_obj) == 0:
                 if len(ret_msg) > 0:
                     ret_msg += '\n'
                 ret_msg += 'yukari没有找到你指定的职业 {} 的信息'.format(class_nick)
