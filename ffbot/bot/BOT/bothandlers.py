@@ -161,7 +161,7 @@ def DpsHandler(*kargs):
         ret_msg += '职业指代\n'
         for obj in cls_obj:
             ret_msg += '{}: {} -> {}\n'.format(obj.id, obj.nick_name, obj.class_id.name)
-        ret_msg ++ 'BOSS指代\n'
+        ret_msg += 'BOSS指代\n'
         for obj in bos_obj:
             ret_msg += '{}: {} -> {}\n'.format(obj.id, obj.nick_name, obj.boss_id.name)
         ret_msg = ret_msg[:-1]
