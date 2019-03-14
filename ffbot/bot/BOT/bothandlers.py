@@ -196,7 +196,8 @@ def DpsHandler(*kargs):
                 # print(day_index)
                 try:
                     msg_dict = get_dps_list(r_boss.quest_id, r_boss.boss_id, r_class.name, day_index)
-                    ret_msg = '以下是国际服FFLOGS {} 在 {} 中第{}天的dps表现:\n'.format(r_class.name, r_boss.name, day_index)
+                    ret_msg = '以下是国际服FFLOGS {} 在 {} 中第{}天\
+                    的dps表现:\n'.format(r_class.name, r_boss.name, day_index)
                     for k, v in msg_dict.items():
                         ret_msg += '%s%%: %.2f\n' % (k, v)
                     ret_msg = ret_msg[:-1]
