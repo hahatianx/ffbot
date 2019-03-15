@@ -252,9 +252,13 @@ class MysqlHeartBeat(object):
         if self.last_message == -1 or \
            now_time > self.last_message + self.time_out:
             try:
-                HeartBeat.objects.filter(id=1).update(beats=self.counter)
-                self.counter += 1
-                self.last_message = now_time
+                tar = HeartBeat.objects.filter(id=1)
+                if len(tar) > 0:
+                    tar.update(beats=self.counter)
+                    self.counter += 1
+                    self.last_message = now_time
+                else:
+                    ret_msg = '紫上上，heartbeat好像没有记录哟'
             except Exception as e:
                 traceback.print_exc()
                 ret_msg = str(e)
