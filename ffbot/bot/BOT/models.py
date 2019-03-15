@@ -36,7 +36,7 @@ class NickBoss(models.Model):
         return self.nick_name
 
 
-class HearthBeat(models.Model):
+class HeartBeat(models.Model):
     name = models.CharField(max_length=100)
     beats = models.BigIntegerField(default=0)
 

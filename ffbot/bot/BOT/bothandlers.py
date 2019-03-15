@@ -7,7 +7,7 @@ import re
 import traceback
 import time
 from .models import Class, Boss, NickBoss, NickClass
-from .models import HearthBeat
+from .models import HeartBeat
 from urllib.request import quote
 
 
@@ -252,7 +252,7 @@ class MysqlHeartBeat(object):
         if self.last_message == -1 or \
            now_time > self.last_message + self.time_out:
             try:
-                HearthBeat.objects.filter(id=1).update(beats=self.counter)
+                HeartBeat.objects.filter(id=1).update(beats=self.counter)
                 self.counter += 1
                 self.last_message = now_time
             except Exception as e:
@@ -285,7 +285,7 @@ class MysqlHeartBeat(object):
 
     def check(self):
         try:
-            tar = HearthBeat.objects.filter(id=1)
+            tar = HeartBeat.objects.filter(id=1)
             if len(tar) > 0:
                 ret_msg = '当前mysql HeartBeat Counter {}'.format(tar[0].beats)
             else:
