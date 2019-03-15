@@ -22,6 +22,6 @@ class NickBossAdmin(admin.ModelAdmin):
     list_display = ('id', 'nick_name', 'boss_id')
 
 
-@admin.register(models.HearthBeat)
+@admin.register(models.HeartBeat)
 class HeartBeatAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'beats')
