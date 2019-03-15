@@ -6,11 +6,12 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, RaidHandler, ToolsiteHandler, DpsHandler
-from bot.BOT.bothandlers import Sheep
+from bot.BOT.bothandlers import Sheep, HearthBeat
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
 this_sheep = Sheep()
+this_heartbeat = HearthBeat()
 
 Handler_dict = {
     '/echo': EchoHandler,
@@ -21,6 +22,7 @@ Handler_dict = {
     '/raid': RaidHandler,
     '/tools': ToolsiteHandler,
     '/dps': DpsHandler,
+    '/cmd_heartbeat': this_heartbeat.cmd_handler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -73,9 +75,16 @@ class WSConsumer(AsyncWebsocketConsumer):
             return_msg = Handler_dict[cmd_str](*kargs)
             await self.send_message(msg_type == 'private', target_id, return_msg)
 
+        ls = plain_text.split()
+        # important: HeartBeat for mysql
+        #####important#####
+        beat_message = this_heartbeat.heartbeat()
+        if len(beat_message) > 0:
+            await self.send_message(msg_type == 'private', target_id, return_msg)
+        #####important#####
+
         # repeating doves
         #####special#####
-        ls = plain_text.split()
         if len(ls) > 0:
             return_msg = this_sheep.handler(ls)
             if len(return_msg) > 0:

@@ -7,6 +7,7 @@ import re
 import traceback
 import time
 from .models import Class, Boss, NickBoss, NickClass
+from .models import HearthBeat
 from urllib.request import quote
 
 
@@ -234,4 +235,63 @@ class Sheep(object):
 
     def set_prob(self, prob):
         self.prob = float(prob) / 100
+
+
+# mysql always disconnects with django for no valid operations within a period of time
+# this class is aimed at keeping in touch with mysql through a periodical updating operation
+# once coolq detects a message, the consumer.py calls this class to send a periodical update if the time's up
+class MysqlHeartBeat(object):
+    def __init__(self):
+        self.time_out = 3600
+        self.last_message = -1
+        self.counter = 1
+
+    def heartbeat(self):
+        ret_msg = ''
+        now_time = time.time()
+        if self.last_message == -1 or \
+           now_time > self.last_message + self.time_out:
+            try:
+                HearthBeat.object.filter(id=1).update(beats=self.counter)
+                self.counter += 1
+                self.last_message = now_time
+            except Exception as e:
+                traceback.print_exc()
+                ret_msg = e.message
+        return ret_msg
+
+    def cmd_handler(self, *kargs):
+        if len(kargs) == 1 and kargs[0] == 'check':
+            return self.check()
+        elif len(kargs) == 2 and kargs[0] == 'set_time_out':
+            time_out = kargs[1]
+            if time_out.isdigit():
+                time_out = int(time_out)
+                return self.set_time_out(time_out)
+            else:
+                ret_msg = 'set_time_out 第二个指令需要一个数字'
+        else:
+            ret_msg = '指令好像出现了错误'
+        return ret_msg
+
+
+    def set_time_out(self, time_out):
+        if time_out > 28800 or time_out < 3600:
+            ret_msg = '超时设置不能太高或者太低，(3600, 28800)最佳'
+        else:
+            self.time_out = time_out
+            ret_msg = 'mysql 超时设置设定为:{}'.format(time_out)
+        return ret_msg
+
+    def check(self):
+        try:
+            tar = HearthBeat.object.filter(id=1)
+            if len(tar) > 0:
+                ret_msg = '当前mysql HeartBeat Counter {}'.format(tar[0].beats)
+            else:
+                ret_msg = 'mysql HeartBeat 缺失，紫上上你怎么那么蠢'
+        except Exception as e:
+            traceback.print_exc()
+            ret_msg = e.message
+        return ret_msg
 

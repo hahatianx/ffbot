@@ -34,3 +34,11 @@ class NickBoss(models.Model):
 
     def __str__(self):
         return self.nick_name
+
+
+class HearthBeat(models.Model):
+    name = models.CharField(max_length=100)
+    beats = models.BigIntegerField(default=0)
+
+    def __str__(self):
+        return self.name
