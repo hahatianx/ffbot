@@ -6,12 +6,12 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, RaidHandler, ToolsiteHandler, DpsHandler
-from bot.BOT.bothandlers import Sheep, MysqlHearthBeat
+from bot.BOT.bothandlers import Sheep, MysqlHeartBeat
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
 this_sheep = Sheep()
-this_heartbeat = MysqlHearthBeat()
+this_heartbeat = MysqlHeartBeat()
 
 Handler_dict = {
     '/echo': EchoHandler,
