@@ -257,7 +257,7 @@ class MysqlHeartBeat(object):
                 self.last_message = now_time
             except Exception as e:
                 traceback.print_exc()
-                ret_msg = e.message
+                ret_msg = str(e)
         return ret_msg
 
     def cmd_handler(self, *kargs):
@@ -292,6 +292,6 @@ class MysqlHeartBeat(object):
                 ret_msg = 'mysql HeartBeat 缺失，紫上上你怎么那么蠢'
         except Exception as e:
             traceback.print_exc()
-            ret_msg = e.message
+            ret_msg = str(e)
         return ret_msg
 
