@@ -79,7 +79,6 @@ class WSConsumer(AsyncWebsocketConsumer):
         # important: HeartBeat for mysql
         #####important#####
         beat_message = this_heartbeat.heartbeat()
-        print(beat_message.encode('utf-8'))
         if len(beat_message) > 0:
             await self.send_message(msg_type == 'private', target_id, beat_message)
         #####important#####
