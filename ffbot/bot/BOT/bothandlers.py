@@ -173,8 +173,9 @@ def DpsHandler(*kargs):
         boss_nick, class_nick = kargs[0], kargs[1]
         ascii_fail = False
         if not isascii(boss_nick) or not isascii(class_nick):
-            ret_msg = 'yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮\
-            你查了\n正确用法:\n/dps <boss> <class>\nboss class具体指代表请查询/dps help'
+            ret_msg = ('yukari比较懒，不想在/dps指令下看到非英文文字，就不想帮你查了\n'
+                      '正确用法:\n/dps <boss> <class>\n'
+                      'boss class具体指代表请查询/dps help')
             ascii_fail = True
         if not ascii_fail:
             class_obj = NickClass.objects.filter(nick_name=class_nick)
