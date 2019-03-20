@@ -6,12 +6,13 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, RaidHandler, ToolsiteHandler, DpsHandler
-from bot.BOT.bothandlers import Sheep, MysqlHeartBeat
+from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
 LOGGER = logging.getLogger(__name__)
 this_sheep = Sheep()
 this_heartbeat = MysqlHeartBeat()
+this_repeater = Repeater()
 
 Handler_dict = {
     '/echo': EchoHandler,
@@ -23,6 +24,7 @@ Handler_dict = {
     '/tools': ToolsiteHandler,
     '/dps': DpsHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
+    '/cmd_repeater': this_repeater.cmd_handler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -83,13 +85,22 @@ class WSConsumer(AsyncWebsocketConsumer):
             await self.send_message(msg_type == 'private', target_id, beat_message)
         #####important#####
 
+        # repeaters
+        dove_flag = True
+        if len(ls) > 0:
+            repeater_msg = this_repeater.run(ls)
+            if len(repeater_msg) > 0:
+                dove_flag = False
+                await self.send_message(msg_type == 'private', target_id, repeater_msg)
+
         # repeating doves
         #####special#####
         if len(ls) > 0:
             return_msg = this_sheep.handler(ls)
-            if len(return_msg) > 0:
+            if len(return_msg) > 0 and dove_flag:
                 await self.send_message(msg_type == 'private', target_id, return_msg)
         #####special#####
+
 
     # 1) deserialize msg  2) handle msg 3) serialize msg 4) send
     async def receive(self, text_data):

@@ -9,6 +9,7 @@ import time
 from .models import Class, Boss, NickBoss, NickClass
 from .models import HeartBeat
 from urllib.request import quote
+from hashlib import md5
 
 
 def EchoHandler(*kargs):
@@ -236,6 +237,35 @@ class Sheep(object):
 
     def set_prob(self, prob):
         self.prob = float(prob) / 100
+
+
+class Repeater(object):
+    def __init__(self):
+        self.last_msg = ''
+        self.cnt = 0
+        self.switch = True
+
+    def run(self, kargs):
+        digest = md5(' '.join(kargs).encode(encoding='utf-8')).hexdigest()
+        if self.last_msg == digest:
+            self.cnt += 1
+            if self.cnt == 3 and self.switch:
+                return ' '.join(kargs)
+        else:
+            self.last_msg = digest
+            self.cnt = 1
+        return ''
+
+    def cmd_handler(self, kargs):
+        if len(kargs) > 1:
+            ret_msg = '复读开关指令有误'
+        else:
+            if kargs[0] in ['on', 'off']:
+                self.switch = True if kargs[0] == 'on' else False
+                ret_msg = '复读机已经被设置为 {}'.format('开' if self.switch else '关')
+            else:
+                ret_msg = '复读开关指令有误'
+        return ret_msg
 
 
 # mysql always disconnects with django for no valid operations within a period of time
