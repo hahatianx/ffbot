@@ -6,8 +6,8 @@ import random
 import re
 import traceback
 import time
-#from .models import Class, Boss, NickBoss, NickClass
-#from .models import HeartBeat
+from .models import Class, Boss, NickBoss, NickClass
+from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
 from selenium import webdriver
@@ -73,8 +73,8 @@ def SearchItemHandler(*kargs):
     return ret_msg
 
 
-#raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
-#raid_config_dict = json.load(raid_config_fd)
+raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
+raid_config_dict = json.load(raid_config_fd)
 
 
 def get_raid_info(tar_url, tar_name, tar_server):
@@ -215,7 +215,7 @@ def DpsHandler(*kargs):
 def MusicHandler(*kargs):
     if len(kargs) < 15:
         search_txt = ' '.join(kargs)
-        driver_path = '/Users/shenshuhan/Downloads/chromedriver'
+        driver_path = '/home/ffxiv/ffbot/chromedriver'
         os.environ["webdriver.chrome.driver"] = driver_path
         raw_music_url = 'https://music.163.com/#/search/m/?s={}&type=1'.format(search_txt)
         music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')
