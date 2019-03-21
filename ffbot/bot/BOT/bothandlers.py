@@ -10,7 +10,7 @@ from .models import Class, Boss, NickBoss, NickClass
 from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
-from selenium import webdriver
+# from selenium import webdriver
 import os
 
 
@@ -212,6 +212,7 @@ def DpsHandler(*kargs):
     return ret_msg
 
 
+'''
 def MusicHandler(*kargs):
     if len(kargs) < 15:
         search_txt = ' '.join(kargs)
@@ -256,6 +257,7 @@ def MusicHandler(*kargs):
     else:
         ret_msg = '指令好像用错了鸭\n正确用法：\n/music <name> [singer]'
     return ret_msg
+'''
 
 
 class Sheep(object):
@@ -380,4 +382,4 @@ class MysqlHeartBeat(object):
 
 
 if __name__ == '__main__':
-    print(MusicHandler('Monkey Me', 'Mly'))
+    # print(MusicHandler('Monkey Me', 'Mly'))
