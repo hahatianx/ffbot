@@ -381,5 +381,5 @@ class MysqlHeartBeat(object):
         return ret_msg
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     # print(MusicHandler('Monkey Me', 'Mly'))

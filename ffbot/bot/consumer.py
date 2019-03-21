@@ -6,7 +6,7 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, \
-    RaidHandler, ToolsiteHandler, DpsHandler, MusicHandler
+    RaidHandler, ToolsiteHandler, DpsHandler,
 from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
