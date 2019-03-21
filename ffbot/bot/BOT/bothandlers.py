@@ -221,6 +221,11 @@ def MusicHandler(*kargs):
         music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('blink-settings=imagesEnabled=false')
+        chrome_options.add_argument('--hide-scrollbars')
+        chrome_options.add_argument('--disable-dev-shm-usage')
         driver = webdriver.Chrome(driver_path, port=9515, options=chrome_options)
         url_ok = True
         driver.set_page_load_timeout(5)
