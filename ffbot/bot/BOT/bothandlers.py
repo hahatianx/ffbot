@@ -41,7 +41,7 @@ def HelpHandler(*kargs):
     /raid:   查看raid攻略情况
     /tools:  辅助网站网址链接
     /dps:    查看FFLOGS高难本dps
-    /music:  网易云音乐找歌
+    /music:  网易云音乐找歌 (´•̥  ̯ •̥`), 服务器内存太小了，这个功能阉割了
     emmm,目前只有那么多啦
     '''
     return ret_msg
