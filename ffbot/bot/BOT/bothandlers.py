@@ -222,8 +222,10 @@ def MusicHandler(*kargs):
         opts = webdriver.ChromeOptions()
         opts.add_argument('--headless')
         opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-gpu')
         driver = webdriver.Chrome(executable_path=driver_path, port=9515, chrome_options=opts, keep_alive=False)
         url_ok = True
+        print('initialization')
         try:
             driver.get(url=music_url)
         except:
