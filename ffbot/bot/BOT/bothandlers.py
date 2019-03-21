@@ -215,7 +215,7 @@ def DpsHandler(*kargs):
 def MusicHandler(*kargs):
     if len(kargs) == 1 or len(kargs) == 2:
         search_txt = ' '.join(kargs)
-        driver_path = '/Users/shenshuhan/Downloads/chromedriver'
+        driver_path = '/home/ffxiv/ffbot/chromedriver'
         os.environ["webdriver.chrome.driver"] = driver_path
         raw_music_url = 'https://music.163.com/#/search/m/?s={}&type=1'.format(search_txt)
         music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')

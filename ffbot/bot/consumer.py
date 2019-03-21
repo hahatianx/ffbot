@@ -5,7 +5,8 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 import gc
 import logging
-from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, RaidHandler, ToolsiteHandler, DpsHandler
+from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, \
+    RaidHandler, ToolsiteHandler, DpsHandler, MusicHandler
 from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
@@ -23,6 +24,7 @@ Handler_dict = {
     '/raid': RaidHandler,
     '/tools': ToolsiteHandler,
     '/dps': DpsHandler,
+    '/music': MusicHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
     '/cmd_repeater': this_repeater.cmd_handler,
 }
