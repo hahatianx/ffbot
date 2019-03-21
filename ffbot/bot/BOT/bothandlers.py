@@ -229,6 +229,7 @@ def MusicHandler(*kargs):
         try:
             driver.get(url=music_url)
         except:
+            traceback.print_exc()
             ret_msg = '网络出现了问题，yukari开始摸鱼了'
             url_ok = False
         if url_ok:
