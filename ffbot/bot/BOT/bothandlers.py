@@ -226,6 +226,7 @@ def MusicHandler(*kargs):
         chrome_options.add_argument("--no-sandbox")
         driver = webdriver.Chrome(driver_path, port=9515, options=chrome_options)
         url_ok = True
+        driver.set_page_load_timeout(5)
         try:
             driver.get(url=music_url)
         except:
