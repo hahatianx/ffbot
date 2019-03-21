@@ -219,6 +219,11 @@ def MusicHandler(*kargs):
         os.environ["webdriver.chrome.driver"] = driver_path
         raw_music_url = 'https://music.163.com/#/search/m/?s={}&type=1'.format(search_txt)
         music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument("window-size=1024,768")
+        chrome_options.add_argument("--no-sandbox")
         driver = webdriver.Chrome(driver_path, port=9515)
         url_ok = True
         try:
