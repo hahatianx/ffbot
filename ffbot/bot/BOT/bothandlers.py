@@ -249,13 +249,11 @@ def MusicHandler(*kargs):
                     "//div[@class='td w1']").text
                 album_name = tar_song_ele.find_element_by_xpath(
                     "//div[@class='td w2']").text
-                ret_msg = (
-                    'yukari在网易云音乐为你找到了这首歌\n',
-                    '歌曲名: {}\n'.format(song_name),
-                    '艺术家: {}\n'.format(artist_name),
-                    '专辑名: {}\n'.format(album_name),
-                    song_url,
-                )
+                ret_msg = 'yukari在网易云音乐为你找到了这首歌\n'
+                ret_msg += '歌曲名: {}\n'.format(song_name)
+                ret_msg += '艺术家: {}\n'.format(artist_name)
+                ret_msg += '专辑名: {}\n'.format(album_name)
+                ret_msg += song_url
         driver.quit()
     else:
         ret_msg = '指令好像用错了鸭\n正确用法：\n/music <name> [singer]'
