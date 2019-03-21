@@ -10,6 +10,8 @@ from .models import Class, Boss, NickBoss, NickClass
 from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
+from selenium import webdriver
+import os
 
 
 def EchoHandler(*kargs):
@@ -25,9 +27,8 @@ def EchoHandler(*kargs):
 
 
 def AboutHandler(*kargs):
-    ret_msg = '''yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相\
-    关资料\n框架思路借鉴于獭獭@Bluefissure\n代码来自@紫上\nlink: https://github.com/hahatianx/ffbot
-    '''
+    ret_msg = ('yukari,\ncopyright by 紫上\nyukari是一个机器人，主要用于方便玩ff14的狗群友查找相'
+    '关资料\n框架思路借鉴于獭獭@Bluefissure\n代码来自@紫上\nlink: https://github.com/hahatianx/ffbot')
     return ret_msg
 
 
@@ -40,6 +41,7 @@ def HelpHandler(*kargs):
     /raid:   查看raid攻略情况
     /tools:  辅助网站网址链接
     /dps:    查看FFLOGS高难本dps
+    /music:  网易云音乐找歌
     emmm,目前只有那么多啦
     '''
     return ret_msg
@@ -210,6 +212,48 @@ def DpsHandler(*kargs):
     return ret_msg
 
 
+def MusicHandler(*kargs):
+    if len(kargs) == 1 or len(kargs) == 2:
+        search_txt = ' '.join(kargs)
+        driver_path = '/Users/shenshuhan/Downloads/chromedriver'
+        os.environ["webdriver.chrome.driver"] = driver_path
+        raw_music_url = 'https://music.163.com/#/search/m/?s={}&type=1'.format(search_txt)
+        music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')
+        driver = webdriver.Chrome(driver_path)
+        url_ok = True
+        try:
+            driver.get(url=music_url)
+        except:
+            ret_msg = '网络出现了问题，yukari开始摸鱼了'
+            url_ok = False
+        if url_ok:
+            driver.switch_to.frame('contentFrame')
+            song_list = driver.find_elements_by_xpath("//div[starts-with(@class, 'item f-cb h-flag')]")
+            if len(song_list) == 0:
+                ret_msg = 'yukari找不到你想要的歌曲，不信你自己搜搜看\n' + music_url
+            else:
+                tar_song_ele = song_list[0]
+                song_url = tar_song_ele.find_element_by_xpath(
+                    "//div[@class='td w0']/div/div[@class='text']/a").get_attribute('href')
+                song_name = tar_song_ele.find_element_by_xpath(
+                    "//div[@class='td w0']").text
+                artist_name = tar_song_ele.find_element_by_xpath(
+                    "//div[@class='td w1']").text
+                album_name = tar_song_ele.find_element_by_xpath(
+                    "//div[@class='td w2']").text
+                ret_msg = (
+                    'yukari在网易云音乐为你找到了这首歌\n',
+                    '歌曲名: {}\n'.format(song_name),
+                    '艺术家: {}\n'.format(artist_name),
+                    '专辑名: {}\n'.format(album_name),
+                    song_url,
+                )
+        driver.quit()
+    else:
+        ret_msg = '指令好像用错了鸭\n正确用法：\n/music <name> [singer]'
+    return ret_msg
+
+
 class Sheep(object):
     def __init__(self):
         self.prob = 0
@@ -257,7 +301,7 @@ class Repeater(object):
         return ''
 
     def cmd_handler(self, kargs):
-        if len(kargs) > 1:
+        if len(kargs) != 1:
             ret_msg = '复读开关指令有误'
         else:
             if kargs[0] in ['on', 'off']:
@@ -330,3 +374,6 @@ class MysqlHeartBeat(object):
             ret_msg = str(e)
         return ret_msg
 
+
+if __name__ == '__main__':
+    print(MusicHandler('Monkey Me', 'Mly'))
