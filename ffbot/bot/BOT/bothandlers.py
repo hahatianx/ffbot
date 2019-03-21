@@ -11,7 +11,6 @@ from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
 # from selenium import webdriver
-import os
 
 
 def EchoHandler(*kargs):
