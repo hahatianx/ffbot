@@ -224,7 +224,7 @@ def MusicHandler(*kargs):
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument("window-size=1024,768")
         chrome_options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(driver_path, port=9515)
+        driver = webdriver.Chrome(driver_path, port=9515, options=chrome_options)
         url_ok = True
         try:
             driver.get(url=music_url)
