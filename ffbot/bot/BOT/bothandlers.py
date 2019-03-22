@@ -10,6 +10,7 @@ from .models import Class, Boss, NickBoss, NickClass
 from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
+from lxml import html
 # from selenium import webdriver
 
 
@@ -41,6 +42,7 @@ def HelpHandler(*kargs):
     /tools:  辅助网站网址链接
     /dps:    查看FFLOGS高难本dps
     /music:  网易云音乐找歌 (´•̥  ̯ •̥`), 服务器内存太小了，这个功能阉割了
+    /random: 随机数
     emmm,目前只有那么多啦
     '''
     return ret_msg
@@ -208,6 +210,57 @@ def DpsHandler(*kargs):
                 except:
                     traceback.print_exc()
                     ret_msg = '抓取出现bug，快叫紫上上出来挨打'
+    return ret_msg
+
+
+def RandomHandler(*kargs):
+    random_dict = {
+        'num': 1,
+        'min': 0,
+        'max': 99,
+        'col': 1,
+        'base': 10,
+        'format': 'html',
+        'rnd': 'new',
+    }
+    r_ok = True
+    if len(kargs) == 1:
+        tar = kargs[0]
+        if tar.isdigit() and int(tar) < 100000:
+            random_dict['max'] = int(tar)
+        else:
+            ret_msg = '上限设置有误，必须是一个小于1e5的非负整数\n/random [max]'
+            r_ok = False
+    elif len(kargs) == 2:
+        t_num, t_max = kargs[0], kargs[1]
+        if not t_num.isdigit() or not t_max.isdigit():
+            ret_msg = '参数设置错误，num需要一个1e2以内的正整数，max需要一个1e5以内的非负整数\n/random [num] [max]'
+            r_ok = False
+        elif int(t_num) > 100 or int(t_max) > 100000:
+            ret_msg = '参数设置错误，num需要一个1e2以内的正整数，max需要一个1e5以内的非负整数\n/random [num] [max]'
+            r_ok = False
+        else:
+            random_dict['max'] = int(t_max)
+            random_dict['num'] = int(t_num)
+            random_dict['col'] = int(t_num)
+    if r_ok:
+        request_url = 'https://www.random.org/integers/?' \
+                  + '&'.join('{}={}'.format(k, v) for k, v in random_dict.items())
+        rcv_msg = requests.get(url=request_url)
+        if rcv_msg.status_code == 200:
+            page_node = html.etree.HTML(rcv_msg.text)
+            tar_node = page_node.xpath(".//pre[@class='data'] | .//pre[@class='data']/following-sibling::*[1]")
+            nums = tar_node[0].text.split()
+            ret_msg = '以下是在random.org上随机出来的数字\n'
+            cnt = 0
+            for num in nums:
+                if cnt and cnt % 5 == 0:
+                    ret_msg += '\n'
+                cnt += 1
+                ret_msg += '%6d' % int(num)
+            ret_msg += '\n' + tar_node[1].text
+        else:
+            ret_msg = str(rcv_msg)
     return ret_msg
 
 
@@ -381,4 +434,4 @@ class MysqlHeartBeat(object):
 
 
 #if __name__ == '__main__':
-    # print(MusicHandler('Monkey Me', 'Mly'))
+    #print(RandomHandler('10'))
