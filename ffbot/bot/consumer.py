@@ -84,9 +84,9 @@ class WSConsumer(AsyncWebsocketConsumer):
         ls = plain_text.split()
         # important: HeartBeat for mysql
         #####important#####
-        beat_message = this_heartbeat.heartbeat()
-        if len(beat_message) > 0:
-            await self.send_message(msg_type == 'private', target_id, beat_message)
+        #beat_message = this_heartbeat.heartbeat()
+        #if len(beat_message) > 0:
+            #await self.send_message(msg_type == 'private', target_id, beat_message)
         #####important#####
 
         # repeaters
