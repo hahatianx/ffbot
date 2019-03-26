@@ -88,6 +88,9 @@ class WSConsumer(AsyncWebsocketConsumer):
         #if len(beat_message) > 0:
             #await self.send_message(msg_type == 'private', target_id, beat_message)
         #####important#####
+        if cmd_str == '/send':
+            if kargs[0] == 'group' and kargs[1].isdigit():
+                await self.send_message(False, kargs[1], ' '.join(kargs[2:]))
 
         # repeaters
         dove_flag = True
