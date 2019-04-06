@@ -130,6 +130,7 @@ def ToolsiteHandler(*kargs):
     DPS警察: https://xivanalysis.com/
     团辅计算器: http://www.xivrdps.com/
     FF LOGS: https://www.fflogs.com/
+    采集时钟: https://caiji.ffxiv.cn/#/
     '''
     return ret_msg
 
