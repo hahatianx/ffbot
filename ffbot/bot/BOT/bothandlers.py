@@ -11,7 +11,6 @@ from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
 from lxml import html
-# from selenium import webdriver
 
 
 def EchoHandler(*kargs):
@@ -267,52 +266,28 @@ def RandomHandler(*kargs):
     return ret_msg
 
 
-'''
 def MusicHandler(*kargs):
     if len(kargs) < 15:
-        search_txt = ' '.join(kargs)
-        driver_path = '/home/ffxiv/ffbot/chromedriver'
-        os.environ["webdriver.chrome.driver"] = driver_path
-        raw_music_url = 'https://music.163.com/#/search/m/?s={}&type=1'.format(search_txt)
-        music_url = quote(raw_music_url, safe=';/?:@&=+$,#', encoding='utf-8')
-        opts = webdriver.ChromeOptions()
-        opts.add_argument('--headless')
-        opts.add_argument('--no-sandbox')
-        opts.add_argument('--disable-gpu')
-        driver = webdriver.Chrome(executable_path=driver_path, port=9515, chrome_options=opts)
-        url_ok = True
-        print('initialization')
-        try:
-            driver.get(url=music_url)
-        except:
-            traceback.print_exc()
-            ret_msg = '网络出现了问题，yukari开始摸鱼了'
-            url_ok = False
-        if url_ok:
-            driver.switch_to.frame('contentFrame')
-            song_list = driver.find_elements_by_xpath("//div[starts-with(@class, 'item f-cb h-flag')]")
-            if len(song_list) == 0:
-                ret_msg = 'yukari找不到你想要的歌曲，不信你自己搜搜看\n' + music_url
-            else:
-                tar_song_ele = song_list[0]
-                song_url = tar_song_ele.find_element_by_xpath(
-                    "//div[@class='td w0']/div/div[@class='text']/a").get_attribute('href')
-                song_name = tar_song_ele.find_element_by_xpath(
-                    "//div[@class='td w0']").text
-                artist_name = tar_song_ele.find_element_by_xpath(
-                    "//div[@class='td w1']").text
-                album_name = tar_song_ele.find_element_by_xpath(
-                    "//div[@class='td w2']").text
-                ret_msg = 'yukari在网易云音乐为你找到了这首歌\n'
-                ret_msg += '歌曲名: {}\n'.format(song_name)
-                ret_msg += '艺术家: {}\n'.format(artist_name)
-                ret_msg += '专辑名: {}\n'.format(album_name)
-                ret_msg += song_url
-        driver.quit()
+        tar_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'}
+        tar_url = 'http://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s={}&type=1&offset=0&total=true&limit=1'\
+        .format(' '.join(kargs))
+        rev_msg = requests.get(url=tar_url, headers=tar_header)
+        rev_msg = json.loads(rev_msg.text)
+        print(rev_msg)
+        if 'result' in rev_msg:
+            rev_msg = rev_msg['result']
+            song_id = rev_msg['songs'][0]['id']
+            artist_list = rev_msg['songs'][0]['artists']
+            album_name = rev_msg['songs'][0]['album']['name']
+            artist_name = ' '.join(x['name'] for x in artist_list)
+            ret_msg = '[CQ:music,type=163,id={}]'.format(song_id)
+            ret_msg += '\n艺术家: {}'.format(artist_name)
+            ret_msg += '\n专辑名: {}'.format(album_name)
+        else:
+            ret_msg = 'yukari好像没有找到这首歌'
     else:
         ret_msg = '指令好像用错了鸭\n正确用法：\n/music <name> [singer]'
     return ret_msg
-'''
 
 
 class Sheep(object):
@@ -436,5 +411,5 @@ class MysqlHeartBeat(object):
         return ret_msg
 
 
-#if __name__ == '__main__':
-    #print(RandomHandler('10'))
+if __name__ == '__main__':
+    print(MusicHandler('Monkey Me'))
