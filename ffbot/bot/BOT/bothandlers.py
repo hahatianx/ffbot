@@ -276,6 +276,7 @@ def MusicHandler(*kargs):
         print(rev_msg)
         if 'result' in rev_msg:
             rev_msg = rev_msg['result']
+            print(rev_msg)
             song_id = rev_msg['songs'][0]['id']
             artist_list = rev_msg['songs'][0]['artists']
             album_name = rev_msg['songs'][0]['album']['name']
