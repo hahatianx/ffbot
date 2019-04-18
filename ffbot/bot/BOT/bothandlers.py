@@ -272,7 +272,7 @@ def MusicHandler(*kargs):
         tar_url = 'http://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s={}&type=1&offset=0&total=true&limit=1'\
         .format(' '.join(kargs))
         rev_msg = requests.get(url=tar_url, headers=tar_header)
-        rev_msg = json.loads(rev_msg.text)
+        rev_msg = json.loads(rev_msg.text.encode('utf-8'))
         print(rev_msg)
         if 'result' in rev_msg:
             rev_msg = rev_msg['result']
@@ -413,4 +413,4 @@ class MysqlHeartBeat(object):
 
 
 if __name__ == '__main__':
-    print(MusicHandler('Monkey Me'))
+    print(MusicHandler('啊啊啊'))
