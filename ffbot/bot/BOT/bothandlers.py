@@ -40,8 +40,8 @@ def HelpHandler(*kargs):
     /raid:   查看raid攻略情况
     /tools:  辅助网站网址链接
     /dps:    查看FFLOGS高难本dps
-    /music:  网易云音乐找歌
     /random: 随机数
+    点歌 <歌名> [歌手]  这个API来自coolq论坛用户cs3248
     emmm,目前只有那么多啦
     '''
     return ret_msg

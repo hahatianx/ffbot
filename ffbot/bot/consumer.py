@@ -24,7 +24,7 @@ Handler_dict = {
     '/raid': RaidHandler,
     '/tools': ToolsiteHandler,
     '/dps': DpsHandler,
-    '/music': MusicHandler,
+    #'/music': MusicHandler,
     # for the reason that my server has limited memory, web browser can hardly be launched with mysql running
     '/random': RandomHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
