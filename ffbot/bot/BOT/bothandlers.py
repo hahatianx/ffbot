@@ -268,7 +268,9 @@ def RandomHandler(*kargs):
 
 def MusicHandler(*kargs):
     if len(kargs) < 15:
-        tar_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'}
+        tar_header = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36',
+            "Content-Type": "text/html; charset=UTF-8",}
         tar_url = 'http://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s={}&type=1&offset=0&total=true&limit=1'\
         .format(' '.join(kargs))
         rev_msg = requests.get(url=tar_url, headers=tar_header)
@@ -413,4 +415,4 @@ class MysqlHeartBeat(object):
 
 
 if __name__ == '__main__':
-    print(MusicHandler('啊啊啊'))
+    print(MusicHandler('为什么那么难'))
