@@ -6,7 +6,7 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, \
-    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler
+    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler, MusicHandler
 from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
@@ -24,7 +24,7 @@ Handler_dict = {
     '/raid': RaidHandler,
     '/tools': ToolsiteHandler,
     '/dps': DpsHandler,
-    # '/music': MusicHandler,
+    '/music': MusicHandler,
     # for the reason that my server has limited memory, web browser can hardly be launched with mysql running
     '/random': RandomHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
