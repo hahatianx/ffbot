@@ -95,7 +95,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         # repeaters
         dove_flag = True
         if len(ls) > 0:
-            repeater_msg = this_repeater.run(plain_text)
+            repeater_msg = this_repeater.run(ls)
             if len(repeater_msg) > 0:
                 dove_flag = False
                 await self.send_message(msg_type == 'private', target_id, repeater_msg)
@@ -103,7 +103,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         # repeating doves
         #####special#####
         if len(ls) > 0:
-            return_msg = this_sheep.handler(plain_text)
+            return_msg = this_sheep.handler(ls)
             if len(return_msg) > 0 and dove_flag:
                 await self.send_message(msg_type == 'private', target_id, return_msg)
         #####special#####
