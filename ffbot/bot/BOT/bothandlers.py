@@ -50,7 +50,7 @@ def HelpHandler(*kargs):
 def NuannuanHandler(*kargs):
     ret_msg = ''
     try:
-        r = requests.get(url="http://yotsuyu.yorushika.tk:5000/")
+        r = requests.get(url="http://yotsuyu.yorushika.tk:5000/", timeout=5)
         tx = json.loads(r.text)
         if tx['success']:
             ret_msg = tx['content']
@@ -58,7 +58,7 @@ def NuannuanHandler(*kargs):
         else:
             ret_msg = 'An error occurred.'
     except Exception as e:
-        ret_msg = 'Error'
+        ret_msg = traceback.format_exc(e)
     return ret_msg
 
 
@@ -86,7 +86,7 @@ def get_raid_info(tar_url, tar_name, tar_server):
         'areaID': 1,
         'groupID': tar_server,
     }
-    r = requests.post(url=tar_url, data=tar_data)
+    r = requests.post(url=tar_url, data=tar_data, timeout=5)
     rep = json.loads(r.text)
     if rep['Code'] != 0:
         ret_msg += rep['Message']
@@ -139,7 +139,7 @@ def ToolsiteHandler(*kargs):
 def get_dps_list(quest_id, boss_id, class_name, day_index):
     ff_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/100/8/1\
     /100/1000/7/0/Global/{}/All/0/normalized/single/0/-1/'.format(quest_id, boss_id, class_name)
-    r = requests.get(url=ff_url)
+    r = requests.get(url=ff_url, timeout=5)
     per_list = [10, 25, 50, 75, 95, 99, ]
     pattern_mch = [re.compile('series{}'.format(x)\
                               +r'.data.push\([+-]?(0|([1-9]\d*))(\.\d+)?\)') for x in per_list]
@@ -248,7 +248,7 @@ def RandomHandler(*kargs):
     if r_ok:
         request_url = 'https://www.random.org/integers/?' \
                   + '&'.join('{}={}'.format(k, v) for k, v in random_dict.items())
-        rcv_msg = requests.get(url=request_url)
+        rcv_msg = requests.get(url=request_url, timeout=5)
         if rcv_msg.status_code == 200:
             page_node = html.etree.HTML(rcv_msg.text)
             tar_node = page_node.xpath(".//pre[@class='data'] | .//pre[@class='data']/following-sibling::*[1]")
@@ -273,7 +273,7 @@ def MusicHandler(*kargs):
             "Content-Type": "text/html; charset=UTF-8",}
         tar_url = 'http://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s={}&type=1&offset=0&total=true&limit=1'\
         .format(' '.join(kargs))
-        rev_msg = requests.get(url=tar_url, headers=tar_header)
+        rev_msg = requests.get(url=tar_url, headers=tar_header, timeout=5)
         print(rev_msg.text)
         rev_msg = json.loads(rev_msg.text)
         if 'result' in rev_msg:
