@@ -210,8 +210,8 @@ def DpsHandler(*kargs):
                         ret_msg += '%s%%: %.2f\n' % (k, v)
                     ret_msg = ret_msg[:-1]
                 except:
-                    traceback.print_exc()
-                    ret_msg = '抓取出现bug，快叫紫上上出来挨打'
+                    ret_msg = '抓取出现bug，快叫紫上上出来挨打\n'
+                    ret_msg += traceback.format_exc()
     return ret_msg
 
 
