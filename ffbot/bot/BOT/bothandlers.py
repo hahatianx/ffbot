@@ -58,7 +58,7 @@ def NuannuanHandler(*kargs):
         else:
             ret_msg = 'An error occurred.'
     except Exception as e:
-        ret_msg = traceback.format_exc(e)
+        ret_msg = traceback.format_exc()
     return ret_msg
 
 
