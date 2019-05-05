@@ -1,13 +1,16 @@
 #coding=utf-8
 
+local_debug = False
+
 import requests
 import json
 import random
 import re
 import traceback
 import time, datetime
-from .models import Class, Boss, NickBoss, NickClass
-from .models import HeartBeat
+if not local_debug:
+    from .models import Class, Boss, NickBoss, NickClass
+    from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
 from lxml import html
@@ -73,8 +76,9 @@ def SearchItemHandler(*kargs):
     return ret_msg
 
 
-raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
-raid_config_dict = json.load(raid_config_fd)
+if not local_debug:
+    raid_config_fd = open('/home/ffxiv/ffbot/ffbot/bot/BOT/raid_handler_config.json', 'r', encoding='utf-8')
+    raid_config_dict = json.load(raid_config_fd)
 
 
 def get_raid_info(tar_url, tar_name, tar_server):
@@ -448,7 +452,7 @@ class DressClawer(object):
                         tar_mid = mblog.get('mid')
                         tar_url = text_url.format(tar_mid)
                         rr = requests.get(url=tar_url, headers=self.header)
-                        p_content = json.loads(rr.text)
+                        p_content = json.loads(rr.text.encode('utf-8'))
                         raw_html = p_content.get('data').get('html')
                         if len(raw_html) > 0:
                             raw_text = ''
@@ -472,7 +476,7 @@ class DressClawer(object):
         if p_time == '-1':
             ret_msg = 'yukari坏掉了！！！\n' + text
         else:
-            ret_msg = 'yukari在微博上找到了呜呜栗子的暖暖攻略\n发布时间: {}\n'.format(p_time) + text + '\n'
+            ret_msg = 'yukari在微博上找到了呜呜栗子的暖暖攻略\n发布时间: {}\n\n'.format(p_time) + text + '\n'
             ret_msg += '信息来源：微博呜呜栗子 https://weibo.com/wuwulizi\n'
             ret_msg += '挑战时间截至{}，请快点加油啊！'.format(self.time_out)
         return ret_msg
