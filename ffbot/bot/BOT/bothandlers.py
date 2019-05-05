@@ -5,7 +5,7 @@ import json
 import random
 import re
 import traceback
-import time
+import time, datetime
 from .models import Class, Boss, NickBoss, NickClass
 from .models import HeartBeat
 from urllib.request import quote
@@ -414,5 +414,98 @@ class MysqlHeartBeat(object):
         return ret_msg
 
 
+class DressClawer(object):
+    def __init__(self):
+        self.header = {
+            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36',
+            'Host': 'weibo.com',
+            'Cookie': 'SINAGLOBAL=9350990925015.277.1537960768282; _ga=GA1.2.624254379.1540556355; UM_distinctid=167cb2a6ef6b56-0b744049b84eba-10306653-13c680-167cb2a6ef78c4; UOR=,,www.baidu.com; Ugrow-G0=e66b2e50a7e7f417f6cc12eec600f517; login_sid_t=fe4ee8b7b8d5bc05820bcd8d023551a0; cross_origin_proto=SSL; YF-V5-G0=b4445e3d303e043620cf1d40fc14e97a; _s_tentry=passport.weibo.com; wb_view_log=1440*9002; Apache=9965319411295.297.1557021122674; ULV=1557021122683:15:1:1:9965319411295.297.1557021122674:1555488680438; SCF=AjaCaNfWygi6jiPMZDwSVkIpK5wVBZifwo0SU3G8iggQz403wGT4SJtd0FYt7xrmdj_NSEw9QGlPfrfOHN7eT5g.; SUB=_2A25xyjGWDeRhGeNK6VUQ8yjIyjqIHXVSviRerDV8PUNbmtBeLW2mkW9NSXri11SnZ6lh23s3VRrpQ_1H4c6l9_iY; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WW9zTazLvcXoYqUd_c9Ojya5JpX5K2hUgL.Fo-XeoMpe0qXeKq2dJLoI7ypMgHNUND_MBtt; SUHB=0RyqJx8fcemGxC; ALF=1588557125; SSOLoginState=1557021126; un=15151410524; wvr=6; wb_view_log_5427136416=1440*9002; YF-Page-G0=cd5d86283b86b0d506628aedd6f8896e|1557031125|1557031091; webim_unReadCount=%7B%22time%22%3A1557031127255%2C%22dm_pub_total%22%3A0%2C%22chat_group_pc%22%3A0%2C%22allcountNum%22%3A0%2C%22msgbox%22%3A0%7D',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+        self.time_out = datetime.datetime.now()
+        self.status = False
+        self.info = ''
+
+    def _craw_new_info(self):
+        user_url = 'https://m.weibo.cn/api/container/getIndex?containerid=1076031750802063'
+        text_url = 'https://weibo.com/p/aj/mblog/getlongtext?mid={}'
+        ret_dict = {
+            'status': 'failure',
+            'time': '',
+            'text': '',
+        }
+        try:
+            r = requests.get(url=user_url)
+            content = json.loads(r.text).get('data')
+            cards = content.get('cards')
+            for c in cards:
+                if c.get('card_type') == 9:
+                    mblog = c.get('mblog')
+                    pub_time = mblog.get('created_at')
+                    pub_text = mblog.get('text')
+                    reg_finder = re.compile('本周时尚品鉴 100点得分搭配：')
+                    if len(reg_finder.findall(pub_text)) > 0:
+                        tar_mid = mblog.get('mid')
+                        tar_url = text_url.format(tar_mid)
+                        rr = requests.get(url=tar_url, headers=self.header)
+                        p_content = json.loads(rr.text)
+                        raw_html = p_content.get('data').get('html')
+                        if len(raw_html) > 0:
+                            raw_text = ''
+                            page_node = html.etree.HTML(raw_html)
+                            l = page_node.xpath(".//*")
+                            for x in l:
+                                raw_text += x.tail + '\n' if x.tail is not None else ''
+                            ret_dict['text'] = raw_text.replace('None', '')
+                            ret_dict['time'] = pub_time
+                            ret_dict['status'] = 'success'
+                        break
+        except Exception:
+            ret_dict['text'] = traceback.format_exc()
+        self.info = ret_dict
+
+    def handler(self):
+        a, b = self.get_dress()
+        return self.wrap_info(a, b)
+
+    def wrap_info(self, p_time, text):
+        if p_time == '-1':
+            ret_msg = 'yukari坏掉了！！！\n' + text
+        else:
+            ret_msg = 'yukari在微博上找到了呜呜栗子的暖暖攻略\n发布时间: {}\n'.format(p_time) + text + '\n'
+            ret_msg += '信息来源：微博呜呜栗子 https://weibo.com/wuwulizi\n'
+            ret_msg += '挑战时间截至{}，请快点加油啊！'.format(self.time_out)
+        return ret_msg
+
+    def get_dress(self):
+        r = time.time() + 3600 * 8
+        n_time = datetime.datetime.strptime(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(r)), '%Y-%m-%d %H:%M:%S')
+        if (not self.status) or n_time > self.time_out or (self.info.get('status', 'failure') == 'failure'):
+            self._craw_new_info()
+            self.cal_next_unix_timeout()
+            self.status = True
+        if self.info.get('status', 'failure') == 'success':
+            return self.info.get('time'), self.info.get('text')
+        else:
+            return '-1', self.info.get('text')
+
+    def cal_next_unix_timeout(self):
+        if self.status:
+            time_delta = datetime.timedelta(days=7)
+            now_datetime = self.time_out
+            next_date = now_datetime + time_delta
+            self.time_out = next_date
+        else:
+            r = time.time() + 3600 * 8
+            r_localtime = time.localtime(r)
+            base_time = datetime.datetime.strptime(time.strftime('%Y-%m-%d', r_localtime) + ' 16:00:00', '%Y-%m-%d %H:%M:%S')
+            one_day = datetime.timedelta(days=1)
+            while base_time.weekday() != 1:
+                base_time += one_day
+            self.time_out = base_time
+
+
 if __name__ == '__main__':
-    print(MusicHandler('为什么那么难'))
+    this_dressclawer = DressClawer()
+    print(this_dressclawer.handler())
+

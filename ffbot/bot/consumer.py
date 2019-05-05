@@ -6,7 +6,7 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, \
-    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler, MusicHandler
+    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler, MusicHandler, DressClawer
 from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
@@ -14,11 +14,12 @@ LOGGER = logging.getLogger(__name__)
 this_sheep = Sheep()
 this_heartbeat = MysqlHeartBeat()
 this_repeater = Repeater()
+this_dressclawer = DressClawer()
 
 Handler_dict = {
     '/echo': EchoHandler,
     '/about': AboutHandler,
-    '/dress': NuannuanHandler,
+    '/dress': this_dressclawer.handler,
     '/search': SearchItemHandler,
     '/help': HelpHandler,
     '/raid': RaidHandler,
