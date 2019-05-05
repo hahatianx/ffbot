@@ -452,6 +452,7 @@ class DressClawer(object):
                         tar_mid = mblog.get('mid')
                         tar_url = text_url.format(tar_mid)
                         rr = requests.get(url=tar_url, headers=self.header)
+                        print(tar_url)
                         print(rr.text)
                         p_content = json.loads(rr.text)
                         raw_html = p_content.get('data').get('html')
