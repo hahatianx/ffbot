@@ -1,6 +1,6 @@
 #coding=utf-8
 
-local_debug = True
+local_debug = False
 
 import requests
 import json
@@ -8,23 +8,24 @@ import random
 import re
 import traceback
 import time, datetime
-import base64
-import rsa, binascii
-import urllib
-import http.cookiejar
-import ssl
 if not local_debug:
     from .models import Class, Boss, NickBoss, NickClass
     from .models import HeartBeat
+else:
+    import rsa, binascii
+    import http.cookiejar
+    import base64
+    import urllib
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+    cj = http.cookiejar.LWPCookieJar()
+    cookie_support = urllib.request.HTTPCookieProcessor(cj)
+    opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)
+    urllib.request.install_opener(opener)
 from urllib.request import quote
 from hashlib import md5
 from lxml import html
 
-ssl._create_default_https_context = ssl._create_unverified_context
-cj = http.cookiejar.LWPCookieJar()
-cookie_support = urllib.request.HTTPCookieProcessor(cj)
-opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)
-urllib.request.install_opener(opener)
 
 
 def EchoHandler(*kargs):
