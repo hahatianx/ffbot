@@ -1,6 +1,6 @@
 #coding=utf-8
 
-local_debug = False
+local_debug = True
 
 import requests
 import json
@@ -8,12 +8,23 @@ import random
 import re
 import traceback
 import time, datetime
+import base64
+import rsa, binascii
+import urllib
+import http.cookiejar
+import ssl
 if not local_debug:
     from .models import Class, Boss, NickBoss, NickClass
     from .models import HeartBeat
 from urllib.request import quote
 from hashlib import md5
 from lxml import html
+
+ssl._create_default_https_context = ssl._create_unverified_context
+cj = http.cookiejar.LWPCookieJar()
+cookie_support = urllib.request.HTTPCookieProcessor(cj)
+opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)
+urllib.request.install_opener(opener)
 
 
 def EchoHandler(*kargs):
@@ -53,11 +64,11 @@ def HelpHandler(*kargs):
 def NuannuanHandler(*kargs):
     ret_msg = ''
     try:
-        r = requests.get(url="http://yotsuyu.yorushika.tk:5000/", timeout=5)
+        r = requests.get(url="http://nuannuan.yorushika.co:5000/", timeout=5)
         tx = json.loads(r.text)
         if tx['success']:
             ret_msg = tx['content']
-            ret_msg += '\nby 露儿[Yorushika]'
+            ret_msg += '\nPowered by 露儿[Yorushika]'
         else:
             ret_msg = 'An error occurred.'
     except Exception as e:
@@ -421,16 +432,68 @@ class MysqlHeartBeat(object):
 class DressClawer(object):
     def __init__(self):
         self.header = {
-            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36',
-            'Host': 'weibo.com',
-            'Cookie': 'SINAGLOBAL=9350990925015.277.1537960768282; _ga=GA1.2.624254379.1540556355; UM_distinctid=167cb2a6ef6b56-0b744049b84eba-10306653-13c680-167cb2a6ef78c4; UOR=,,www.baidu.com; Ugrow-G0=e66b2e50a7e7f417f6cc12eec600f517; login_sid_t=fe4ee8b7b8d5bc05820bcd8d023551a0; cross_origin_proto=SSL; YF-V5-G0=b4445e3d303e043620cf1d40fc14e97a; _s_tentry=passport.weibo.com; wb_view_log=1440*9002; Apache=9965319411295.297.1557021122674; ULV=1557021122683:15:1:1:9965319411295.297.1557021122674:1555488680438; SCF=AjaCaNfWygi6jiPMZDwSVkIpK5wVBZifwo0SU3G8iggQz403wGT4SJtd0FYt7xrmdj_NSEw9QGlPfrfOHN7eT5g.; SUB=_2A25xyjGWDeRhGeNK6VUQ8yjIyjqIHXVSviRerDV8PUNbmtBeLW2mkW9NSXri11SnZ6lh23s3VRrpQ_1H4c6l9_iY; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WW9zTazLvcXoYqUd_c9Ojya5JpX5K2hUgL.Fo-XeoMpe0qXeKq2dJLoI7ypMgHNUND_MBtt; SUHB=0RyqJx8fcemGxC; ALF=1588557125; SSOLoginState=1557021126; un=15151410524; wvr=6; wb_view_log_5427136416=1440*9002; YF-Page-G0=cd5d86283b86b0d506628aedd6f8896e|1557031125|1557031091; webim_unReadCount=%7B%22time%22%3A1557031127255%2C%22dm_pub_total%22%3A0%2C%22chat_group_pc%22%3A0%2C%22allcountNum%22%3A0%2C%22msgbox%22%3A0%7D',
-            'X-Requested-With': 'XMLHttpRequest',
+            'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)'
         }
         self.time_out = datetime.datetime.now()
         self.status = False
         self.info = ''
+        self.ID = [1750802063]
+        self.host = 'https://weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=100606&is_search=0&visible=0&is_all=1&is_tag=0&profile_ftype=1&'
+        self.ID_URL = self.get_urls()
+
+    def post_data(self, url, data):
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)'}
+        data = urllib.parse.urlencode(data).encode('utf-8')
+        request = urllib.request.Request(url, data, headers)
+        response = urllib.request.urlopen(request)
+        text = response.read().decode('gbk')
+        return text
+
+    def get_data(self, url):
+        request = urllib.request.Request(url)
+        response = urllib.request.urlopen(request)
+        text = response.read()
+        return text
+
+    def get_urls(self):
+        ID_urls = {}
+        for id in range(len(self.ID)):
+            urls = []
+            urls.append(self.host + "page=1" + "&pagebar=0&id=" + str(self.ID[id]))
+            for j in range(0, 2):
+                urls.append(self.host + "page=" + str(1) + "&pagebar=" + str(j) + "&id=" + str(
+                    self.ID[id]) + "&pre_page=" + str(1))
+            ID_urls[id] = urls
+        return ID_urls
+
+    def login_weibo(self, nick, pwd):
+        session = requests.session()
+        prelogin_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%s&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.15)&_=1400822309846' % nick
+        preLogin = session.get(prelogin_url).text
+        servertime = re.findall('"servertime":(.*?),', preLogin)[0]
+        pubkey = re.findall('"pubkey":"(.*?)",', preLogin)[0]
+        rsakv = re.findall('"rsakv":"(.*?)",', preLogin)[0]
+        nonce = re.findall('"nonce":"(.*?)",', preLogin)[0]
+
+        su = base64.b64encode(bytes(urllib.request.quote(nick), encoding='utf-8'))
+        rsaPublickey = int(pubkey, 16)
+        key = rsa.PublicKey(rsaPublickey, 65537)
+        message = bytes(str(servertime) + '\t' + str(nonce) + '\n' + str(pwd), encoding='utf-8')
+        sp = binascii.b2a_hex(rsa.encrypt(message, key))
+
+        param = {'entry': 'weibo', 'gateway': 1, 'from': '', 'savestate': 7, 'useticket': 1,
+                 'pagerefer': 'http://login.sina.com.cn/sso/logout.php?entry=miniblog&r=http%3A%2F%2Fweibo.com%2Flogout.php%3Fbackurl%3D',
+                 'vsnf': 1, 'su': su, 'service': 'miniblog', 'servertime': servertime, 'nonce': nonce,
+                 'pwencode': 'rsa2', 'rsakv': rsakv, 'sp': sp, 'sr': '1680*1050',
+                 'encoding': 'UTF-8', 'prelt': 961,
+                 'url': 'http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack'}
+
+        s = self.post_data('http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.15)', param)
+        #urll = re.findall("location.replace\(\'(.*?)\'\);", s)
+        print('login ok')
 
     def _craw_new_info(self):
+        #self.login_weibo('shuhan.x.shen@gmail.com', 'shen123')
         user_url = 'https://m.weibo.cn/api/container/getIndex?containerid=1076031750802063'
         text_url = 'https://weibo.com/p/aj/mblog/getlongtext?mid={}'
         ret_dict = {
@@ -452,8 +515,6 @@ class DressClawer(object):
                         tar_mid = mblog.get('mid')
                         tar_url = text_url.format(tar_mid)
                         rr = requests.get(url=tar_url, headers=self.header)
-                        print(tar_url)
-                        print(rr.text)
                         p_content = json.loads(rr.text)
                         raw_html = p_content.get('data').get('html')
                         if len(raw_html) > 0:
@@ -469,6 +530,7 @@ class DressClawer(object):
         except Exception:
             ret_dict['text'] = traceback.format_exc()
         self.info = ret_dict
+        print(json.dumps(ret_dict))
 
     def handler(self):
         a, b = self.get_dress()
@@ -512,6 +574,5 @@ class DressClawer(object):
 
 
 if __name__ == '__main__':
-    this_dressclawer = DressClawer()
-    print(this_dressclawer.handler())
-
+    this_d = DressClawer()
+    this_d.handler()

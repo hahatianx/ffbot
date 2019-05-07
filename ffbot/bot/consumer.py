@@ -19,7 +19,7 @@ this_dressclawer = DressClawer()
 Handler_dict = {
     '/echo': EchoHandler,
     '/about': AboutHandler,
-    '/dress': this_dressclawer.handler,
+    '/dress': NuannuanHandler,
     '/search': SearchItemHandler,
     '/help': HelpHandler,
     '/raid': RaidHandler,
