@@ -148,6 +148,8 @@ def ToolsiteHandler(*kargs):
     采集时钟: https://caiji.ffxiv.cn/
     配方计算器: http://v6.ffxiv.xin/
     生产模拟器: http://viktorlab.net/crafter/
+    housing: http://ff14housing.com/
+    配装模拟器: http://ffxiv.ariyala.com/
     '''
     return ret_msg
 
