@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_db_reconnect',
+    'django_db_reconnect',
     'channels',
     'bot.BOT',
 ]
