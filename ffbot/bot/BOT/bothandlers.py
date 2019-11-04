@@ -227,7 +227,7 @@ def DpsHandler(*kargs):
                     s_list = []
                     for k in msg_dict.keys():
                         s_list.append(int(k))
-                    sorted(s_list)
+                    s_list.sort(reverse=True)
                     for k in s_list:
                         v = msg_dict[k]
                         ret_msg += '%d%%: %.2f\n' % (k, v)
