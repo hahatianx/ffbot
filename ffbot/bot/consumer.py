@@ -15,6 +15,7 @@ this_sheep = Sheep()
 this_heartbeat = MysqlHeartBeat()
 this_repeater = Repeater()
 this_dressclawer = DressClawer()
+this_timer = TimeHandler()
 
 Handler_dict = {
     '/echo': EchoHandler,
@@ -30,7 +31,7 @@ Handler_dict = {
     '/random': RandomHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
     '/cmd_repeater': this_repeater.cmd_handler,
-    '/time': TimeHandler,
+    '/time': this_timer.timehandler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):
