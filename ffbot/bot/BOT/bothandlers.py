@@ -56,6 +56,7 @@ def HelpHandler(*kargs):
     /tools:  辅助网站网址链接
     /dps:    查看FFLOGS高难本dps
     /random: 随机数
+    /time:   转换时间
     点歌 <歌名> [歌手]  这个API来自coolq论坛用户cs3248
     emmm,目前只有那么多啦
     '''
