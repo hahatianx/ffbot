@@ -1,6 +1,6 @@
 #coding=utf-8
 
-local_debug = False
+local_debug = True
 
 import requests
 import json
@@ -323,71 +323,74 @@ def MusicHandler(*kargs):
     return ret_msg
 
 
-def TimeHandler(*kargs):
-    zone = [0, 8, -8, 9]
-    zname = ['UTC', 'UTC+8', 'PST', 'JST']
-    dst = {'utc': 1, 'utc+8': 0, 'pst': 1, 'jst': 0}
-    tzone = {'utc': 0, 'pst': -8, 'utc+8': 8, 'jst': 9}
-    daylighttime = 0
-    def format_time(utcunixtime, cut=False):
-        ret = []
-        for n, z in zip(zname, zone):
-            c_unixtime = utcunixtime + datetime.timedelta(hours=z)\
-                         + datetime.timedelta(hours=daylighttime * dst[n.lower()])
-            if cut:
-                ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S')[11:])
-            else:
-                ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S'))
-        return ret
+class TimeHandler(object):
+    def __init__(self):
+        self.daylighttime = 0
 
-    if len(kargs) == 0:
-        cur_time = datetime.datetime.now(datetime.timezone.utc)
-        str_time = format_time(cur_time)
-        ret_msg = '转换时间:\n' + '\n'.join(str_time)
-    elif kargs[0] == 'help':
-        # print helping message
-        ret_msg ='''yukari 的时区小工具:
-/time 打印当前时间
-/time HH:MM Zone 打印规定时区的时间
-/time YYYY-mm-dd HH:mm Zone 打印指定日期的时间'''
-    elif kargs[0] == 'set_daylighttime':
-        daylighttime = 1 if kargs[1] == '1' else 0
-        ret_msg = '夏令时设置为{}'.format(daylighttime)
-    elif len(kargs) == 2:
-        # print time + zone
-        tt_zone = kargs[1].lower()
-        if tt_zone in tzone:
-            d_dst = dst[tt_zone]
-            ds = tzone[tt_zone]
-            try:
-                tar_time = datetime.datetime.strptime(kargs[0], '%H:%M')\
-                           + datetime.timedelta(days=5) + datetime.timedelta(hours=-ds)\
-                           + datetime.timedelta(hours=d_dst * -daylighttime)
-                str_time = format_time(tar_time, True)
-                ret_msg = '转换时间:\n' + '\n'.join(str_time)
-            except:
+    def timehandler(self, *kargs):
+        zone = [0, 8, -8, 9]
+        zname = ['UTC', 'UTC+8', 'PST', 'JST']
+        dst = {'utc': 1, 'utc+8': 0, 'pst': 1, 'jst': 0}
+        tzone = {'utc': 0, 'pst': -8, 'utc+8': 8, 'jst': 9}
+        def format_time(utcunixtime, cut=False):
+            ret = []
+            for n, z in zip(zname, zone):
+                c_unixtime = utcunixtime + datetime.timedelta(hours=z)\
+                             + datetime.timedelta(hours=self.daylighttime * dst[n.lower()])
+                if cut:
+                    ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S')[11:])
+                else:
+                    ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S'))
+            return ret
+
+        if len(kargs) == 0:
+            cur_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=-self.daylighttime)
+            str_time = format_time(cur_time)
+            ret_msg = '转换时间:\n' + '\n'.join(str_time)
+        elif kargs[0] == 'help':
+            # print helping message
+            ret_msg ='''yukari 的时区小工具:
+    /time 打印当前时间
+    /time HH:MM Zone 打印规定时区的时间
+    /time YYYY-mm-dd HH:mm Zone 打印指定日期的时间'''
+        elif kargs[0] == 'set_daylighttime':
+            self.daylighttime = 1 if kargs[1] == '1' else 0
+            ret_msg = '夏令时设置为{}'.format(self.daylighttime)
+        elif len(kargs) == 2:
+            # print time + zone
+            tt_zone = kargs[1].lower()
+            if tt_zone in tzone:
+                d_dst = dst[tt_zone]
+                ds = tzone[tt_zone]
+                try:
+                    tar_time = datetime.datetime.strptime(kargs[0], '%H:%M')\
+                               + datetime.timedelta(days=5) + datetime.timedelta(hours=-ds)\
+                               + datetime.timedelta(hours=d_dst * -self.daylighttime)
+                    str_time = format_time(tar_time, True)
+                    ret_msg = '转换时间:\n' + '\n'.join(str_time)
+                except:
+                    ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+            else:
+                ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+        elif len(kargs) == 3:
+            # date + time
+            tt_zone = kargs[2].lower()
+            if tt_zone in tzone:
+                ds = tzone[tt_zone]
+                d_dst = dst[tt_zone]
+                try:
+                    tar_time = datetime.datetime.strptime(kargs[0] + ' ' + kargs[1], '%Y-%m-%d %H:%M') \
+                               + datetime.timedelta(hours=-ds) + datetime.timedelta(hours=d_dst * -daylighttime)
+                    str_time = format_time(tar_time)
+                    ret_msg = '转换时间:\n' + '\n'.join(str_time)
+                except:
+                    ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+            else:
                 ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
         else:
+            # bad format
             ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
-    elif len(kargs) == 3:
-        # date + time
-        tt_zone = kargs[2].lower()
-        if tt_zone in tzone:
-            ds = tzone[tt_zone]
-            d_dst = dst[tt_zone]
-            try:
-                tar_time = datetime.datetime.strptime(kargs[0] + ' ' + kargs[1], '%Y-%m-%d %H:%M') \
-                           + datetime.timedelta(hours=-ds) + datetime.timedelta(hours=d_dst * -daylighttime)
-                str_time = format_time(tar_time)
-                ret_msg = '转换时间:\n' + '\n'.join(str_time)
-            except:
-                ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
-        else:
-            ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
-    else:
-        # bad format
-        ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
-    return ret_msg
+        return ret_msg
 
 
 
@@ -657,4 +660,6 @@ class DressClawer(object):
 
 
 if __name__ == '__main__':
-    print(TimeHandler())
+    timeh = TimeHandler()
+    print(timeh.timehandler('set_daylighttime', '1'))
+    print(timeh.timehandler())
