@@ -6,7 +6,7 @@ import json
 import gc
 import logging
 from bot.BOT.bothandlers import EchoHandler, AboutHandler, NuannuanHandler, SearchItemHandler, HelpHandler, \
-    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler, MusicHandler, DressClawer
+    RaidHandler, ToolsiteHandler, DpsHandler, RandomHandler, MusicHandler, DressClawer, TimeHandler
 from bot.BOT.bothandlers import Sheep, MysqlHeartBeat, Repeater
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.ERROR)
 
@@ -30,6 +30,7 @@ Handler_dict = {
     '/random': RandomHandler,
     '/cmd_heartbeat': this_heartbeat.cmd_handler,
     '/cmd_repeater': this_repeater.cmd_handler,
+    '/time': TimeHandler,
 }
 
 class WSConsumer(AsyncWebsocketConsumer):

@@ -157,6 +157,12 @@ def ToolsiteHandler(*kargs):
 def get_dps_list(quest_id, boss_id, class_name, day_index):
     ff_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/100/8/1\
     /100/1000/7/0/Global/{}/All/0/normalized/single/0/-1/'.format(quest_id, boss_id, class_name)
+    # f_url = 'https://www.fflogs.com/zone/statistics/table/{}/dps/{}/{}/8/{}\
+    # /100/1000/7/{}/Global/{}/All/0/normalized/single/0/-1/?keystone=15&dpstype={pdps}'.format(
+    #     quest_id,
+    #     boss_id,
+    #     class_name,
+    # )
     r = requests.get(url=ff_url, timeout=5)
     per_list = [10, 25, 50, 75, 95, 99, ]
     pattern_mch = [re.compile('series{}'.format(x)\
@@ -314,6 +320,65 @@ def MusicHandler(*kargs):
     else:
         ret_msg = '指令好像用错了鸭\n正确用法：\n/music <name> [singer]'
     return ret_msg
+
+
+def TimeHandler(*kargs):
+    zone = [8, -8, 9]
+    zname = ['UTC+8', 'PST  ', 'JST  ']
+    tzone = {'utc': 0, 'pst': -8, 'utc+8': 8, 'jst': 9}
+    def format_time(utcunixtime, cut=False):
+        ret = []
+        for n, z in zip(zname, zone):
+            c_unixtime = utcunixtime + datetime.timedelta(hours=z)
+            if cut:
+                ret.append(n + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S')[11:])
+            else:
+                ret.append(n + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S'))
+        return ret
+
+    if len(kargs) == 0:
+        cur_time = datetime.datetime.now(datetime.timezone.utc)
+        str_time = format_time(cur_time)
+        ret_msg = '转换时间:\n' + '\n'.join(str_time)
+    elif kargs[0] == 'help':
+        # print helping message
+        ret_msg ='''yukari 的时区小工具:
+/time 打印当前时间
+/time HH:MM Zone 打印规定时区的时间
+/time YYYY-mm-dd HH:mm Zone 打印指定日期的时间'''
+    elif len(kargs) == 2:
+        # print time + zone
+        tt_zone = kargs[1].lower()
+        if tt_zone in tzone:
+            ds = tzone[tt_zone]
+            try:
+                tar_time = datetime.datetime.strptime(kargs[0], '%H:%M')\
+                           + datetime.timedelta(days=5) + datetime.timedelta(hours=-ds)
+                str_time = format_time(tar_time, True)
+                ret_msg = '转换时间:\n' + '\n'.join(str_time)
+            except:
+                ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+        else:
+            ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+    elif len(kargs) == 3:
+        # date + time
+        tt_zone = kargs[2].lower()
+        if tt_zone in tzone:
+            ds = tzone[tt_zone]
+            try:
+                tar_time = datetime.datetime.strptime(kargs[0] + ' ' + kargs[1], '%Y-%m-%d %H:%M') \
+                           + datetime.timedelta(hours=-ds)
+                str_time = format_time(tar_time)
+                ret_msg = '转换时间:\n' + '\n'.join(str_time)
+            except:
+                ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+        else:
+            ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+    else:
+        # bad format
+        ret_msg = 'yukari 发现输入的数据有问题，请检查输入'
+    return ret_msg
+
 
 
 class Sheep(object):
@@ -582,5 +647,4 @@ class DressClawer(object):
 
 
 if __name__ == '__main__':
-    this_d = DressClawer()
-    this_d.handler()
+    print(TimeHandler('2019-1-30', '0:30', 'utc+8'))
