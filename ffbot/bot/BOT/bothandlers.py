@@ -325,7 +325,7 @@ def MusicHandler(*kargs):
 
 def TimeHandler(*kargs):
     zone = [0, 8, -8, 9]
-    zname = ['UTC\t', 'UTC+8\t', 'PST\t', 'JST\t']
+    zname = ['UTC', 'UTC+8', 'PST', 'JST']
     dst = {'utc': 1, 'utc+8': 0, 'pst': 1, 'jst': 0}
     tzone = {'utc': 0, 'pst': -8, 'utc+8': 8, 'jst': 9}
     daylighttime = 0
@@ -335,9 +335,9 @@ def TimeHandler(*kargs):
             c_unixtime = utcunixtime + datetime.timedelta(hours=z)\
                          + datetime.timedelta(hours=daylighttime * dst[n.lower()])
             if cut:
-                ret.append(n + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S')[11:])
+                ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S')[11:])
             else:
-                ret.append(n + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S'))
+                ret.append('{:6}'.format(n) + ' : ' + c_unixtime.strftime('%Y-%m-%d %H:%M:%S'))
         return ret
 
     if len(kargs) == 0:
@@ -657,4 +657,4 @@ class DressClawer(object):
 
 
 if __name__ == '__main__':
-    print(TimeHandler('2019-1-30', '0:30', 'utc+8'))
+    print(TimeHandler())
