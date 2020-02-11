@@ -1,6 +1,6 @@
 certifi==2018.11.29
 chardet==3.0.4
-Django==2.1.7
+Django==2.2.10
 idna==2.6
 jsonpickle==0.9.6
 PyMySQL==0.9.3
