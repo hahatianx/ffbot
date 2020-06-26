@@ -19,19 +19,6 @@ Thanks to Bluefissure and his source code.  I have learnt a lot from his code.
 Here is his robot [TATA](https://github.com/Bluefissure/FFXIVBOT/) on github.
 
 ### Structure
-The whole project consists of several parts.  The backend is a Django application
-based on Python3.  The user interface is a qq account, used to exchange information
-with other members in the QQ group.  The communication between the two ends is based on
-websocket, a full-duplex protocol.  Since no queue structure is applied, the whole
-project may be quite low-efficient. And that is why I do not recommend for heavy use.
+
 
 ### Deployment
-Before deployment, you have to have two(recommended) machines(1 linux and 1 windows).
-The Linux machines is used to run django backend, while the windows machine runs a program
-[Coolq](https://cqp.cc/), a qq robot API.
-1. Install Redis, Mysql on your linux machine;
-2. Clone the source code onto your linux machine, and run it;
-3. Download Coolq onto your windows machine;
-4. Download HttpApi for Coolq and check your HttpApi Config;
-
-Then your two machines should have real-time communications.  Have Fun!
